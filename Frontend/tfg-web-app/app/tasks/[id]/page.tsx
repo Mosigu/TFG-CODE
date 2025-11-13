@@ -32,6 +32,7 @@ import { MainMenu } from "../../components/MainMenu";
 import { EditTaskModal } from "../../components/EditTaskModal";
 import { AddMilestoneModal } from "../../components/AddMilestoneModal";
 import { AddIncidenceModal } from "../../components/AddIncidenceModal";
+import { AddCollaboratorModal } from "../../components/AddCollaboratorModal";
 import {
   getTaskById,
   updateTask,
@@ -43,6 +44,8 @@ import {
   createIncidence,
   updateIncidence,
   deleteIncidence,
+  addUserToTask,
+  removeUserFromTask,
 } from "../../utils/work-element-utils";
 
 interface User {
@@ -120,6 +123,8 @@ export default function TaskDetailPage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [newComment, setNewComment] = useState("");
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+  const [addCollaboratorModalOpen, setAddCollaboratorModalOpen] =
+    useState(false);
 
   const fetchTaskData = async () => {
     try {
@@ -253,6 +258,25 @@ export default function TaskDetailPage() {
       console.error("Error adding comment:", error);
     } finally {
       setIsSubmittingComment(false);
+    }
+  };
+
+  const handleAddCollaborator = async (userId: string, role: string) => {
+    try {
+      await addUserToTask(params.id as string, userId, role);
+      await fetchTaskData(); // Refresh data
+    } catch (error) {
+      console.error("Error adding collaborator:", error);
+      throw error;
+    }
+  };
+
+  const handleRemoveCollaborator = async (userId: string) => {
+    try {
+      await removeUserFromTask(params.id as string, userId);
+      await fetchTaskData(); // Refresh data
+    } catch (error) {
+      console.error("Error removing collaborator:", error);
     }
   };
 
@@ -474,7 +498,11 @@ export default function TaskDetailPage() {
               <Card size="3">
                 <Flex justify="between" align="center" mb="3">
                   <Heading size="4">Collaborators</Heading>
-                  <Button size="2" variant="soft">
+                  <Button
+                    size="2"
+                    variant="soft"
+                    onClick={() => setAddCollaboratorModalOpen(true)}
+                  >
                     <PlusIcon />
                     Add Collaborator
                   </Button>
@@ -498,7 +526,19 @@ export default function TaskDetailPage() {
                             </Text>
                           </Box>
                         </Flex>
-                        <Badge color="blue">{userTask.role}</Badge>
+                        <Flex gap="2" align="center">
+                          <Badge color="blue">{userTask.role}</Badge>
+                          <IconButton
+                            size="1"
+                            variant="soft"
+                            color="red"
+                            onClick={() =>
+                              handleRemoveCollaborator(userTask.userId)
+                            }
+                          >
+                            <TrashIcon />
+                          </IconButton>
+                        </Flex>
                       </Flex>
                     ))}
                   </Flex>
@@ -762,6 +802,15 @@ export default function TaskDetailPage() {
         onSave={handleAddIncidence}
         taskId={params.id as string}
         incidence={editingIncidence}
+      />
+
+      {/* Add Collaborator Modal */}
+      <AddCollaboratorModal
+        open={addCollaboratorModalOpen}
+        onClose={() => setAddCollaboratorModalOpen(false)}
+        onAdd={handleAddCollaborator}
+        type="task"
+        currentUserIds={task.users?.map((u) => u.userId) || []}
       />
     </Flex>
   );
