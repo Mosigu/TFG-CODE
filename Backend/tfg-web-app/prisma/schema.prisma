@@ -1,0 +1,140 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String   @id @default(cuid())
+  name              String?
+  surname           String?
+  email             String   @unique
+  password          String
+  profilePictureURL String?
+  managerId         String?
+  manager           User?    @relation("ManagerSubordinates", fields: [managerId], references: [id], onDelete: SetNull)
+  subordinates      User[]   @relation("ManagerSubordinates")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  projects          UserProject[]
+  tasks             UserTask[]
+  createdTasks      Task[]   @relation("CreatedTasks")
+  comments          Comment[]
+  events            Event[]
+}
+
+model Project {
+  id          String        @id @default(cuid())
+  title       String
+  description String?
+  startDate   DateTime?
+  endDate     DateTime?
+  type        String?
+  status      String        @default("active")
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  
+  tasks       Task[]
+  users       UserProject[]
+}
+
+model Task {
+  id           String       @id @default(cuid())
+  title        String
+  description  String?
+  status       String       @default("pending")
+  priority     String
+  startDate    DateTime?
+  endDate      DateTime?
+  
+  // Foreign keys
+  projectId    String
+  project      Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdById  String
+  createdBy    User         @relation("CreatedTasks", fields: [createdById], references: [id])
+  
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  
+  // Relaciones
+  milestones   Milestone[]
+  incidences   Incidence[]
+  users        UserTask[]
+  comments     Comment[]
+}
+
+model UserProject {
+  userId    String
+  projectId String
+  role      String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  @@id([userId, projectId])
+}
+
+model UserTask {
+  userId String
+  taskId String
+  role   String?
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  @@id([userId, taskId])
+}
+
+model Milestone {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  isCompleted Boolean  @default(false)
+  taskId      String
+  task        Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Incidence {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  
+  taskId      String
+  task        Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  
+  reportedAt  DateTime @default(now())
+  resolvedAt  DateTime?
+  status      String   @default("open")
+  priority    String   @default("medium")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  taskId    String?
+  task      Task?    @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Event {
+  id                  String   @id @default(cuid())
+  agentId             String
+  agent               User     @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  
+  entityType          String
+  entityId            String
+  action              String
+  description         String
+  
+  relatedEntityType   String?
+  relatedEntityId     String?
+  
+  content             String?
+  createdAt           DateTime @default(now())
+}
