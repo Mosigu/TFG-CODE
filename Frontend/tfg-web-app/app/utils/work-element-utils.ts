@@ -673,7 +673,8 @@ export function logoutUser() {
 export function getCurrentUser() {
   if (typeof window !== "undefined") {
     const userStr = localStorage.getItem("current_user");
-    return userStr ? JSON.parse(userStr) : null;
+    // Check if userStr exists and is not the string "undefined"
+    return userStr && userStr !== "undefined" ? JSON.parse(userStr) : null;
   }
   return null;
 }
@@ -684,4 +685,123 @@ export function isAuthenticated() {
     return !!localStorage.getItem("auth_token");
   }
   return false;
+}
+
+// Add user to project
+export async function addUserToProject(
+  projectId: string,
+  userId: string,
+  role: string = "collaborator"
+) {
+  try {
+    const response = await apiClient.post(
+      `/work-elements/projects/${projectId}/users`,
+      { userId, role }
+    );
+    return response.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.response) {
+      console.error(
+        "Backend error:",
+        error.response.status,
+        error.response.data
+      );
+      throw new Error(
+        `Error adding user to project: ${error.response.status}`
+      );
+    } else if (error instanceof Error) {
+      console.error("Network or Axios error:", error.message);
+      throw new Error("Network error adding user to project");
+    } else {
+      console.error("Unknown error", error);
+      throw new Error("Unknown error adding user to project");
+    }
+  }
+}
+
+// Remove user from project
+export async function removeUserFromProject(
+  projectId: string,
+  userId: string
+) {
+  try {
+    const response = await apiClient.delete(
+      `/work-elements/projects/${projectId}/users/${userId}`
+    );
+    return response.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.response) {
+      console.error(
+        "Backend error:",
+        error.response.status,
+        error.response.data
+      );
+      throw new Error(
+        `Error removing user from project: ${error.response.status}`
+      );
+    } else if (error instanceof Error) {
+      console.error("Network or Axios error:", error.message);
+      throw new Error("Network error removing user from project");
+    } else {
+      console.error("Unknown error", error);
+      throw new Error("Unknown error removing user from project");
+    }
+  }
+}
+
+// Add user to task
+export async function addUserToTask(
+  taskId: string,
+  userId: string,
+  role: string = "assigned"
+) {
+  try {
+    const response = await apiClient.post(
+      `/work-elements/tasks/${taskId}/users`,
+      { userId, role }
+    );
+    return response.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.response) {
+      console.error(
+        "Backend error:",
+        error.response.status,
+        error.response.data
+      );
+      throw new Error(`Error adding user to task: ${error.response.status}`);
+    } else if (error instanceof Error) {
+      console.error("Network or Axios error:", error.message);
+      throw new Error("Network error adding user to task");
+    } else {
+      console.error("Unknown error", error);
+      throw new Error("Unknown error adding user to task");
+    }
+  }
+}
+
+// Remove user from task
+export async function removeUserFromTask(taskId: string, userId: string) {
+  try {
+    const response = await apiClient.delete(
+      `/work-elements/tasks/${taskId}/users/${userId}`
+    );
+    return response.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.response) {
+      console.error(
+        "Backend error:",
+        error.response.status,
+        error.response.data
+      );
+      throw new Error(
+        `Error removing user from task: ${error.response.status}`
+      );
+    } else if (error instanceof Error) {
+      console.error("Network or Axios error:", error.message);
+      throw new Error("Network error removing user from task");
+    } else {
+      console.error("Unknown error", error);
+      throw new Error("Unknown error removing user from task");
+    }
+  }
 }

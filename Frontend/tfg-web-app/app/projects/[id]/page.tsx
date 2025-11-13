@@ -31,6 +31,7 @@ import {
 import { MainMenu } from "../../components/MainMenu";
 import { EditProjectModal } from "../../components/EditProjectModal";
 import { CreateTaskModal } from "../../components/CreateTaskModal";
+import { AddCollaboratorModal } from "../../components/AddCollaboratorModal";
 import { SimpleTasksTable } from "../../components/TasksTable";
 import {
   getProjectById,
@@ -39,6 +40,8 @@ import {
   getProjectUsers,
   getProjectTasks,
   createTask,
+  addUserToProject,
+  removeUserFromProject,
 } from "../../utils/work-element-utils";
 
 interface Project {
@@ -82,6 +85,8 @@ export default function ProjectDetailPage() {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [createTaskModalOpen, setCreateTaskModalOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [addCollaboratorModalOpen, setAddCollaboratorModalOpen] =
+    useState(false);
 
   const fetchProjectData = async () => {
     try {
@@ -165,6 +170,25 @@ export default function ProjectDetailPage() {
     } catch (error) {
       console.error("Error deleting project:", error);
       setDeleteDialogOpen(false);
+    }
+  };
+
+  const handleAddCollaborator = async (userId: string, role: string) => {
+    try {
+      await addUserToProject(params.id as string, userId, role);
+      await fetchProjectData(); // Refresh data
+    } catch (error) {
+      console.error("Error adding collaborator:", error);
+      throw error;
+    }
+  };
+
+  const handleRemoveCollaborator = async (userId: string) => {
+    try {
+      await removeUserFromProject(params.id as string, userId);
+      await fetchProjectData(); // Refresh data
+    } catch (error) {
+      console.error("Error removing collaborator:", error);
     }
   };
 
@@ -424,9 +448,16 @@ export default function ProjectDetailPage() {
 
             {/* Participants Section */}
             <Card size="3">
-              <Heading size="4" mb="3">
-                Participants
-              </Heading>
+              <Flex justify="between" align="center" mb="3">
+                <Heading size="4">Participants</Heading>
+                <Button
+                  size="2"
+                  onClick={() => setAddCollaboratorModalOpen(true)}
+                >
+                  <PlusIcon />
+                  Add Collaborator
+                </Button>
+              </Flex>
               {participants.length > 0 ? (
                 <Flex direction="column" gap="3">
                   {participants.map((participant) => (
@@ -446,10 +477,22 @@ export default function ProjectDetailPage() {
                           </Text>
                         </Box>
                       </Flex>
-                      <Badge color={getRoleBadgeColor(participant.role)}>
-                        {getRoleIcon(participant.role)}
-                        {participant.role}
-                      </Badge>
+                      <Flex gap="2" align="center">
+                        <Badge color={getRoleBadgeColor(participant.role)}>
+                          {getRoleIcon(participant.role)}
+                          {participant.role}
+                        </Badge>
+                        <Button
+                          size="1"
+                          variant="soft"
+                          color="red"
+                          onClick={() =>
+                            handleRemoveCollaborator(participant.userId)
+                          }
+                        >
+                          <TrashIcon />
+                        </Button>
+                      </Flex>
                     </Flex>
                   ))}
                 </Flex>
@@ -487,6 +530,15 @@ export default function ProjectDetailPage() {
         onClose={() => setCreateTaskModalOpen(false)}
         onSave={handleCreateTask}
         projectId={params.id as string}
+      />
+
+      {/* Add Collaborator Modal */}
+      <AddCollaboratorModal
+        open={addCollaboratorModalOpen}
+        onClose={() => setAddCollaboratorModalOpen(false)}
+        onAdd={handleAddCollaborator}
+        type="project"
+        currentUserIds={participants.map((p) => p.userId)}
       />
     </Flex>
   );
