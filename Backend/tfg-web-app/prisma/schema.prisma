@@ -13,6 +13,7 @@ model User {
   surname           String?
   email             String   @unique
   password          String
+  role              String   @default("contributor")
   profilePictureURL String?
   managerId         String?
   manager           User?    @relation("ManagerSubordinates", fields: [managerId], references: [id], onDelete: SetNull)
