@@ -691,7 +691,7 @@ export function isAuthenticated() {
 export async function addUserToProject(
   projectId: string,
   userId: string,
-  role: string = "collaborator"
+  role: string = "contributor"
 ) {
   try {
     const response = await apiClient.post(

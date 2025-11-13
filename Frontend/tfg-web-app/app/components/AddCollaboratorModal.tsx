@@ -28,14 +28,14 @@ interface AddCollaboratorModalProps {
 }
 
 const PROJECT_ROLES = [
-  { value: "manager", label: "Manager" },
-  { value: "collaborator", label: "Collaborator" },
-  { value: "viewer", label: "Viewer" },
+  { value: "manager", label: "Manager - Can manage project and tasks" },
+  { value: "contributor", label: "Contributor - Can update tasks and create issues" },
+  { value: "viewer", label: "Viewer - Read-only access" },
 ];
 
 const TASK_ROLES = [
-  { value: "assigned", label: "Assigned" },
-  { value: "reviewer", label: "Reviewer" },
+  { value: "assigned", label: "Assigned - Can update task status" },
+  { value: "reviewer", label: "Reviewer - Can review and comment" },
 ];
 
 export function AddCollaboratorModal({
@@ -48,7 +48,7 @@ export function AddCollaboratorModal({
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUserId, setSelectedUserId] = useState("");
   const [selectedRole, setSelectedRole] = useState(
-    type === "project" ? "collaborator" : "assigned"
+    type === "project" ? "contributor" : "assigned"
   );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -98,7 +98,7 @@ export function AddCollaboratorModal({
 
   const handleClose = () => {
     setSelectedUserId("");
-    setSelectedRole(type === "project" ? "collaborator" : "assigned");
+    setSelectedRole(type === "project" ? "contributor" : "assigned");
     setError(null);
     onClose();
   };

@@ -1,14 +1,14 @@
-import { IsString, IsNotEmpty, IsEnum } from 'class-validator';
+import { IsString, IsNotEmpty, IsEnum, IsOptional } from 'class-validator';
 
 export class CreateUserProjectDto {
   @IsNotEmpty()
   @IsString()
   userId: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  projectId: string;
+  projectId?: string;
 
-  @IsEnum(['admin', 'member', 'viewer'])
+  @IsEnum(['manager', 'contributor', 'viewer'])
   role: string;
 }

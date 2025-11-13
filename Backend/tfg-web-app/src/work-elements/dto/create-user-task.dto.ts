@@ -5,11 +5,11 @@ export class CreateUserTaskDto {
   @IsString()
   userId: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  taskId: string;
+  taskId?: string;
 
   @IsOptional()
-  @IsEnum(['owner', 'contributor', 'reviewer'])
+  @IsEnum(['assigned', 'reviewer'])
   role?: string;
 }
