@@ -536,3 +536,152 @@ export async function getMyTasks(userId: string) {
     }
   }
 }
+
+// Get all incidences
+export async function getAllIncidences() {
+  try {
+    const response = await apiClient.get("/work-elements/incidents");
+    return response.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.response) {
+      console.error(
+        "Backend error:",
+        error.response.status,
+        error.response.data
+      );
+      throw new Error(`Error fetching incidences: ${error.response.status}`);
+    } else if (error instanceof Error) {
+      console.error("Network or Axios error:", error.message);
+      throw new Error("Network error fetching incidences");
+    } else {
+      console.error("Unknown error", error);
+      throw new Error("Unknown error fetching incidences");
+    }
+  }
+}
+
+// Get all activities
+export async function getAllActivities(limit?: number) {
+  try {
+    const url = limit ? `/activity?limit=${limit}` : "/activity";
+    const response = await apiClient.get(url);
+    return response.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.response) {
+      console.error(
+        "Backend error:",
+        error.response.status,
+        error.response.data
+      );
+      throw new Error(`Error fetching activities: ${error.response.status}`);
+    } else if (error instanceof Error) {
+      console.error("Network or Axios error:", error.message);
+      throw new Error("Network error fetching activities");
+    } else {
+      console.error("Unknown error", error);
+      throw new Error("Unknown error fetching activities");
+    }
+  }
+}
+
+// Get user by ID
+export async function getUserById(userId: string) {
+  try {
+    const response = await apiClient.get(`/users/${userId}`);
+    return response.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.response) {
+      console.error(
+        "Backend error:",
+        error.response.status,
+        error.response.data
+      );
+      throw new Error(`Error fetching user: ${error.response.status}`);
+    } else if (error instanceof Error) {
+      console.error("Network or Axios error:", error.message);
+      throw new Error("Network error fetching user");
+    } else {
+      console.error("Unknown error", error);
+      throw new Error("Unknown error fetching user");
+    }
+  }
+}
+
+// Get all users
+export async function getAllUsers() {
+  try {
+    const response = await apiClient.get("/users");
+    return response.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.response) {
+      console.error(
+        "Backend error:",
+        error.response.status,
+        error.response.data
+      );
+      throw new Error(`Error fetching users: ${error.response.status}`);
+    } else if (error instanceof Error) {
+      console.error("Network or Axios error:", error.message);
+      throw new Error("Network error fetching users");
+    } else {
+      console.error("Unknown error", error);
+      throw new Error("Unknown error fetching users");
+    }
+  }
+}
+
+// Login user
+export async function loginUser(email: string, password: string) {
+  try {
+    const response = await apiClient.post("/users/login", { email, password });
+    const { access_token, user } = response.data;
+
+    // Store token in localStorage
+    if (typeof window !== "undefined") {
+      localStorage.setItem("auth_token", access_token);
+      localStorage.setItem("current_user", JSON.stringify(user));
+    }
+
+    return { access_token, user };
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.response) {
+      console.error(
+        "Backend error:",
+        error.response.status,
+        error.response.data
+      );
+      throw new Error(`Error logging in: ${error.response.data.message || error.response.status}`);
+    } else if (error instanceof Error) {
+      console.error("Network or Axios error:", error.message);
+      throw new Error("Network error logging in");
+    } else {
+      console.error("Unknown error", error);
+      throw new Error("Unknown error logging in");
+    }
+  }
+}
+
+// Logout user
+export function logoutUser() {
+  if (typeof window !== "undefined") {
+    localStorage.removeItem("auth_token");
+    localStorage.removeItem("current_user");
+  }
+}
+
+// Get current user from localStorage
+export function getCurrentUser() {
+  if (typeof window !== "undefined") {
+    const userStr = localStorage.getItem("current_user");
+    return userStr ? JSON.parse(userStr) : null;
+  }
+  return null;
+}
+
+// Check if user is authenticated
+export function isAuthenticated() {
+  if (typeof window !== "undefined") {
+    return !!localStorage.getItem("auth_token");
+  }
+  return false;
+}
