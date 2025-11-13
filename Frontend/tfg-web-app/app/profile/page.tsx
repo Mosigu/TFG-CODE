@@ -24,6 +24,7 @@ interface User {
   email: string;
   name?: string;
   surname?: string;
+  role?: string;
   profilePictureURL?: string;
 }
 
@@ -140,6 +141,15 @@ export default function ProfilePage() {
                     <Text size="3">{user.surname}</Text>
                   </Box>
                 )}
+
+                <Box>
+                  <Text size="2" weight="bold" color="gray" mb="1">
+                    Role
+                  </Text>
+                  <Text size="3" style={{ textTransform: "capitalize" }}>
+                    {user.role || "contributor"}
+                  </Text>
+                </Box>
               </Flex>
 
               {/* Logout button */}

@@ -23,6 +23,7 @@ export class UsersService {
         email: true,
         name: true,
         surname: true,
+        role: true,
         profilePictureURL: true,
         managerId: true,
         createdAt: true,
@@ -39,6 +40,7 @@ export class UsersService {
         email: true,
         name: true,
         surname: true,
+        role: true,
         profilePictureURL: true,
         managerId: true,
         createdAt: true,
@@ -58,6 +60,7 @@ export class UsersService {
         password: hashedPassword,
         name: createUserDto.name,
         surname: createUserDto.surname,
+        role: createUserDto.role || 'contributor',
         profilePictureURL: createUserDto.profilePictureURL,
         managerId: createUserDto.managerId,
       },
@@ -66,6 +69,7 @@ export class UsersService {
         email: true,
         name: true,
         surname: true,
+        role: true,
         profilePictureURL: true,
         managerId: true,
         createdAt: true,
@@ -86,6 +90,7 @@ export class UsersService {
     if (updateUserDto.name !== undefined) data.name = updateUserDto.name;
     if (updateUserDto.surname !== undefined)
       data.surname = updateUserDto.surname;
+    if (updateUserDto.role !== undefined) data.role = updateUserDto.role;
     if (updateUserDto.profilePictureURL !== undefined)
       data.profilePictureURL = updateUserDto.profilePictureURL;
     if (updateUserDto.managerId !== undefined) {
@@ -105,6 +110,7 @@ export class UsersService {
         email: true,
         name: true,
         surname: true,
+        role: true,
         profilePictureURL: true,
         managerId: true,
         createdAt: true,
@@ -121,6 +127,7 @@ export class UsersService {
         email: true,
         name: true,
         surname: true,
+        role: true,
         profilePictureURL: true,
         managerId: true,
         createdAt: true,
@@ -151,6 +158,9 @@ export class UsersService {
 
   async login(user: Omit<User, 'password'>) {
     const payload = { sub: user.id, email: user.email };
-    return { access_token: this.jwtService.sign(payload) };
+    return {
+      access_token: this.jwtService.sign(payload),
+      user: user
+    };
   }
 }
