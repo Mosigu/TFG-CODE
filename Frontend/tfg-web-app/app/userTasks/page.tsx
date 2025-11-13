@@ -1,11 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Text, Heading, Flex, Box } from "@radix-ui/themes";
 import { MainMenu } from "../components/MainMenu";
 import { TaskCategory } from "../components/TaskCategory";
 import { TaskCard } from "../components/TaskCard";
-import { getMyTasks } from "../utils/work-element-utils";
+import {
+  getMyTasks,
+  isAuthenticated,
+  getCurrentUser,
+} from "../utils/work-element-utils";
 
 // Usuario por defecto (mismo que usas en el backend)
 const DEFAULT_USER_ID = "default-user";
@@ -27,11 +32,21 @@ interface Task {
 export default function UserTasks() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
+    // Check authentication
+    if (!isAuthenticated()) {
+      router.push("/login");
+      return;
+    }
+
     const fetchTasks = async () => {
       try {
-        const data = await getMyTasks(DEFAULT_USER_ID);
+        // Get current user ID from localStorage
+        const currentUser = getCurrentUser();
+        const userId = currentUser?.id || DEFAULT_USER_ID;
+        const data = await getMyTasks(userId);
         setTasks(data);
       } catch (error) {
         console.error("Error fetching tasks:", error);
@@ -41,7 +56,7 @@ export default function UserTasks() {
     };
 
     fetchTasks();
-  }, []);
+  }, [router]);
 
   // Filtrar tareas por estado
   const pendingTasks = tasks.filter((task) => task.status === "pending");
