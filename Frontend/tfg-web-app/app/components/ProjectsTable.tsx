@@ -12,9 +12,19 @@ import {
 } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 
+interface Project {
+  id: string;
+  title: string;
+  description?: string;
+  status?: string;
+  type?: string;
+  endDate?: string;
+  startDate?: string;
+}
+
 export const ProjectsTable = () => {
-  const [projects, setProjects] = useState([]);
-  const [filteredProjects, setFilteredProjects] = useState([]);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("all");

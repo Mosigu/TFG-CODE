@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Text, Heading, Flex, Box } from "@radix-ui/themes";
 import { MainMenu } from "./components/MainMenu";
+import { PageContainer } from "./components/PageContainer";
 import { CirclesWidget } from "./components/CirclesWidget";
 import {
   getProjects,
@@ -86,13 +87,13 @@ export default function Home() {
   return (
     <Flex gap="5">
       <MainMenu />
-      <Box width="100%" p="6">
-        <Flex gap="9" direction="column">
+      <PageContainer maxWidth="1200px">
+        <Flex gap="6" direction="column">
           <Heading as="h1" size="8" weight="bold" highContrast>
-            Home
+            Dashboard
           </Heading>
-          <Heading as="h1" size="7" weight="bold" highContrast align="center">
-            {loading ? "Loading..." : "You have"}
+          <Heading as="h2" size="6" weight="medium" align="center">
+            {loading ? "Loading..." : "Your Activity Overview"}
           </Heading>
         </Flex>
         {!loading && (
@@ -102,7 +103,7 @@ export default function Home() {
             openIncidences={openIncidences}
           />
         )}
-      </Box>
+      </PageContainer>
     </Flex>
   );
 }

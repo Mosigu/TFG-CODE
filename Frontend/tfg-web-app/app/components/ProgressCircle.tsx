@@ -26,7 +26,6 @@ export const ProgressCircle = ({
           textColor: iris.iris9,
           trailColor: iris.iris3, // bg Color
           textSize: "1rem",
-          weight: "bold",
         })}
       />
     </Box>

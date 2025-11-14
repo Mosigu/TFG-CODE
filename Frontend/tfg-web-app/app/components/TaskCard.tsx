@@ -54,25 +54,25 @@ export const TaskCard = ({
         e.currentTarget.style.boxShadow = "none";
       }}
     >
-      <Flex direction="column" gap="2">
-        <Flex justify="between" align="center">
-          <Heading size="3" style={{ flex: 1 }}>
+      <Flex direction="column" gap="3">
+        <Flex justify="between" align="start" gap="2">
+          <Heading size="4" weight="medium" style={{ flex: 1 }}>
             {title}
           </Heading>
-          <Badge color={getPriorityColor(priority)} size="1">
+          <Badge color={getPriorityColor(priority)} size="2">
             {priority}
           </Badge>
         </Flex>
 
         {projectTitle && (
-          <Text size="1" color="gray">
+          <Text size="2" color="gray">
             📁 {projectTitle}
           </Text>
         )}
 
-        <Flex align="center" gap="1" mt="1">
-          <CalendarIcon className="w-3 h-3" />
-          <Text size="1" color="gray">
+        <Flex align="center" gap="2">
+          <CalendarIcon width="14" height="14" />
+          <Text size="2" color="gray">
             {startDate} → {endDate}
           </Text>
         </Flex>

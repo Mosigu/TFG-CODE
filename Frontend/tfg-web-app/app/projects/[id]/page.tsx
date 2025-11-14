@@ -29,6 +29,7 @@ import {
   PlusIcon,
 } from "@radix-ui/react-icons";
 import { MainMenu } from "../../components/MainMenu";
+import { PageContainer } from "../../components/PageContainer";
 import { EditProjectModal } from "../../components/EditProjectModal";
 import { CreateTaskModal } from "../../components/CreateTaskModal";
 import { AddCollaboratorModal } from "../../components/AddCollaboratorModal";
@@ -230,11 +231,9 @@ export default function ProjectDetailPage() {
     return (
       <Flex gap="5">
         <MainMenu />
-        <Box width="100%">
-          <Container size="3">
-            <Text>Loading project details...</Text>
-          </Container>
-        </Box>
+        <PageContainer maxWidth="1200px">
+          <Text size="3">Loading project details...</Text>
+        </PageContainer>
       </Flex>
     );
   }
@@ -243,14 +242,15 @@ export default function ProjectDetailPage() {
     return (
       <Flex gap="5">
         <MainMenu />
-        <Box width="100%">
-          <Container size="3">
-            <Text color="red">Project has been deleted.</Text>
-            <Button onClick={() => router.push("/projects")} mt="4">
-              Back to Projects
-            </Button>
-          </Container>
-        </Box>
+        <PageContainer maxWidth="1200px">
+          <Text size="3" color="red">
+            Project has been deleted.
+          </Text>
+          <Button onClick={() => router.push("/projects")} mt="4">
+            <ArrowLeftIcon />
+            Back to Projects
+          </Button>
+        </PageContainer>
       </Flex>
     );
   }
@@ -260,11 +260,10 @@ export default function ProjectDetailPage() {
   return (
     <Flex gap="5">
       <MainMenu />
-      <Box width="100%">
-        <Container size="3">
-          {/* Header */}
-          <Flex direction="column" gap="6">
-            <Flex justify="between" align="center">
+      <PageContainer maxWidth="1200px">
+        {/* Header */}
+        <Flex direction="column" gap="6">
+          <Flex justify="between" align="center" wrap="wrap" gap="3">
               <Button onClick={handleBack} variant="soft">
                 <ArrowLeftIcon />
                 Back to Projects
@@ -335,18 +334,18 @@ export default function ProjectDetailPage() {
             </Box>
 
             {/* Progress Card */}
-            <Card size="2">
-              <Flex direction="column" gap="2">
+            <Card size="3">
+              <Flex direction="column" gap="3">
                 <Flex justify="between" align="center">
-                  <Text size="2" weight="bold">
+                  <Text size="3" weight="bold">
                     Project Progress
                   </Text>
-                  <Text size="2" color="gray">
+                  <Text size="3" color="gray">
                     {progress}%
                   </Text>
                 </Flex>
                 <Progress value={progress} size="3" />
-                <Text size="1" color="gray">
+                <Text size="2" color="gray">
                   {tasks.filter((t) => t.status === "completed").length} of{" "}
                   {tasks.length} tasks completed
                 </Text>
@@ -513,8 +512,7 @@ export default function ProjectDetailPage() {
               <SimpleTasksTable tasks={tasks} />
             </Card>
           </Flex>
-        </Container>
-      </Box>
+        </PageContainer>
 
       {/* Edit Modal */}
       <EditProjectModal

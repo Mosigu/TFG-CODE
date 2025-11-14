@@ -13,6 +13,7 @@ import {
 } from "@radix-ui/themes";
 import { ExitIcon, PersonIcon } from "@radix-ui/react-icons";
 import { MainMenu } from "../components/MainMenu";
+import { PageContainer } from "../components/PageContainer";
 import {
   getCurrentUser,
   logoutUser,
@@ -55,9 +56,9 @@ export default function ProfilePage() {
     return (
       <Flex gap="5">
         <MainMenu />
-        <Box width="100%" p="6">
-          <Text>Loading...</Text>
-        </Box>
+        <PageContainer maxWidth="800px">
+          <Text size="3">Loading...</Text>
+        </PageContainer>
       </Flex>
     );
   }
@@ -66,9 +67,9 @@ export default function ProfilePage() {
     return (
       <Flex gap="5">
         <MainMenu />
-        <Box width="100%" p="6">
-          <Text>No user data available</Text>
-        </Box>
+        <PageContainer maxWidth="800px">
+          <Text size="3">No user data available</Text>
+        </PageContainer>
       </Flex>
     );
   }
@@ -76,13 +77,13 @@ export default function ProfilePage() {
   return (
     <Flex gap="5">
       <MainMenu />
-      <Box width="100%" p="6">
+      <PageContainer maxWidth="800px">
         <Flex direction="column" gap="6">
           <Heading as="h1" size="8" weight="bold" highContrast>
             Profile
           </Heading>
 
-          <Card size="4" style={{ maxWidth: "600px" }}>
+          <Card size="4">
             <Flex direction="column" gap="6">
               {/* Avatar section */}
               <Flex align="center" gap="4">
@@ -96,8 +97,8 @@ export default function ProfilePage() {
                   }
                   color="blue"
                 />
-                <Flex direction="column">
-                  <Heading size="6">
+                <Flex direction="column" gap="1">
+                  <Heading size="6" weight="bold">
                     {user.name || user.surname
                       ? `${user.name || ""} ${user.surname || ""}`.trim()
                       : "User"}
@@ -110,14 +111,14 @@ export default function ProfilePage() {
 
               {/* User info */}
               <Flex direction="column" gap="4">
-                <Flex direction="column" gap="2">
+                <Flex direction="column" gap="1">
                   <Text size="2" weight="bold" color="gray">
                     User ID
                   </Text>
                   <Text size="3">{user.id}</Text>
                 </Flex>
 
-                <Flex direction="column" gap="2">
+                <Flex direction="column" gap="1">
                   <Text size="2" weight="bold" color="gray">
                     Email
                   </Text>
@@ -125,7 +126,7 @@ export default function ProfilePage() {
                 </Flex>
 
                 {user.name && (
-                  <Flex direction="column" gap="2">
+                  <Flex direction="column" gap="1">
                     <Text size="2" weight="bold" color="gray">
                       Name
                     </Text>
@@ -134,7 +135,7 @@ export default function ProfilePage() {
                 )}
 
                 {user.surname && (
-                  <Flex direction="column" gap="2">
+                  <Flex direction="column" gap="1">
                     <Text size="2" weight="bold" color="gray">
                       Surname
                     </Text>
@@ -142,7 +143,7 @@ export default function ProfilePage() {
                   </Flex>
                 )}
 
-                <Flex direction="column" gap="2">
+                <Flex direction="column" gap="1">
                   <Text size="2" weight="bold" color="gray">
                     Role
                   </Text>
@@ -164,7 +165,7 @@ export default function ProfilePage() {
             </Flex>
           </Card>
         </Flex>
-      </Box>
+      </PageContainer>
     </Flex>
   );
 }
