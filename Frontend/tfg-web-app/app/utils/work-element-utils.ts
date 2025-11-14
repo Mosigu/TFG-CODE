@@ -458,18 +458,14 @@ export async function getAllTasks() {
 
 export async function getMyTasks(userId: string) {
   try {
-    console.log("🔍 [getMyTasks] Starting - userId:", userId);
 
     // 1. Obtener todos los proyectos
     const projectsResponse = await apiClient.get("/work-elements/projects");
     const allProjects = projectsResponse.data;
-    console.log("📁 [getMyTasks] Total projects:", allProjects.length);
-    console.log("📁 [getMyTasks] Projects:", allProjects);
 
     // 2. Filtrar proyectos donde el usuario está asignado
     const myProjects = allProjects.filter((project: any) => {
       const hasUsers = project.users && project.users.length > 0;
-      console.log(`  🔍 Project "${project.title}":`, {
         hasUsers,
         users: project.users,
         match: project.users?.some((up: any) => up.userId === userId),
@@ -479,26 +475,22 @@ export async function getMyTasks(userId: string) {
       );
     });
 
-    console.log("✅ [getMyTasks] My projects:", myProjects.length);
     console.log(
       "✅ [getMyTasks] My projects details:",
       myProjects.map((p: any) => ({ id: p.id, title: p.title }))
     );
 
     if (myProjects.length === 0) {
-      console.warn("⚠️  [getMyTasks] No projects found for user");
       return [];
     }
 
     // 3. Obtener tareas de cada proyecto
-    console.log("📋 [getMyTasks] Fetching tasks for each project...");
     const allTasksPromises = myProjects.map(async (project: any) => {
       try {
         console.log(
           `  📋 Fetching tasks for project: ${project.title} (${project.id})`
         );
         const tasks = await getProjectTasks(project.id);
-        console.log(`  ✅ Got ${tasks.length} tasks for ${project.title}`);
         console.log(`  Tasks:`, tasks);
         return tasks;
       } catch (error) {
@@ -511,15 +503,11 @@ export async function getMyTasks(userId: string) {
     });
 
     const tasksArrays = await Promise.all(allTasksPromises);
-    console.log("📊 [getMyTasks] Tasks arrays:", tasksArrays);
 
     const allTasks = tasksArrays.flat();
-    console.log("✅ [getMyTasks] Total tasks:", allTasks.length);
-    console.log("✅ [getMyTasks] All tasks:", allTasks);
 
     return allTasks;
   } catch (error: unknown) {
-    console.error("❌ [getMyTasks] Error:", error);
     if (axios.isAxiosError(error) && error.response) {
       console.error(
         "Backend error:",

@@ -223,7 +223,7 @@ export default function ProjectDetailPage() {
     if (tasks.length === 0) return 0;
     const completedTasks = tasks.filter(
       (task) => task.status === "completed"
-    ).length; // ✅
+    ).length;
     return Math.round((completedTasks / tasks.length) * 100);
   };
 
