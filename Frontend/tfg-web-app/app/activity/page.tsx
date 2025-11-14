@@ -13,6 +13,7 @@ import {
   Badge,
 } from "@radix-ui/themes";
 import { MainMenu } from "../components/MainMenu";
+import { PageContainer } from "../components/PageContainer";
 import {
   getAllActivities,
   getAllUsers,
@@ -107,17 +108,19 @@ export default function ActivityPage() {
   return (
     <Flex gap="5">
       <MainMenu />
-      <Box width="100%" p="6">
+      <PageContainer maxWidth="1000px">
         <Flex direction="column" gap="6">
           <Heading as="h1" size="8" weight="bold" highContrast>
             Activity Feed
           </Heading>
 
           {loading ? (
-            <Text>Loading activities...</Text>
+            <Text size="3">Loading activities...</Text>
           ) : activities.length === 0 ? (
-            <Card>
-              <Text color="gray">No activities found</Text>
+            <Card size="3">
+              <Text size="3" color="gray">
+                No activities found
+              </Text>
             </Card>
           ) : (
             <Flex direction="column" gap="3">
@@ -132,9 +135,9 @@ export default function ActivityPage() {
                   : "?";
 
                 return (
-                  <Card key={activity.id}>
+                  <Card key={activity.id} size="3">
                     <Flex direction="column" gap="3">
-                      <Flex align="center" justify="between">
+                      <Flex align="center" justify="between" wrap="wrap" gap="3">
                         <Flex gap="3" align="center">
                           <Avatar
                             size="3"
@@ -144,14 +147,17 @@ export default function ActivityPage() {
                             color="blue"
                           />
                           <Flex direction="column" gap="1">
-                            <Text size="2" weight="bold">
+                            <Text size="3" weight="bold">
                               {userName}
                             </Text>
-                            <Flex gap="2" align="center">
-                              <Badge color={getActionColor(activity.action)}>
+                            <Flex gap="2" align="center" wrap="wrap">
+                              <Badge
+                                color={getActionColor(activity.action)}
+                                size="2"
+                              >
                                 {activity.action}
                               </Badge>
-                              <Text size="1" color="gray">
+                              <Text size="2" color="gray">
                                 {activity.entityType}
                               </Text>
                             </Flex>
@@ -177,7 +183,7 @@ export default function ActivityPage() {
             </Flex>
           )}
         </Flex>
-      </Box>
+      </PageContainer>
     </Flex>
   );
 }

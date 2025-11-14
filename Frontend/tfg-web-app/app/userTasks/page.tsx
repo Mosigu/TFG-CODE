@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Text, Heading, Flex, Box } from "@radix-ui/themes";
 import { MainMenu } from "../components/MainMenu";
+import { PageContainer } from "../components/PageContainer";
 import { TaskCategory } from "../components/TaskCategory";
 import { TaskCard } from "../components/TaskCard";
 import {
@@ -70,9 +71,9 @@ export default function UserTasks() {
     return (
       <Flex gap="5">
         <MainMenu />
-        <Box width="100%" p="6">
-          <Text>Loading tasks...</Text>
-        </Box>
+        <PageContainer>
+          <Text size="3">Loading tasks...</Text>
+        </PageContainer>
       </Flex>
     );
   }
@@ -80,14 +81,21 @@ export default function UserTasks() {
   return (
     <Flex gap="5">
       <MainMenu />
-      <Box width="100%" p="6">
-        <Flex gap="9" direction="column">
+      <PageContainer>
+        <Flex gap="6" direction="column">
           <Heading as="h1" size="8" weight="bold" highContrast>
             My Tasks
           </Heading>
 
-          {/* Task categories */}
-          <Flex gap="4">
+          {/* Task categories - responsive grid */}
+          <Flex
+            gap="4"
+            wrap="wrap"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            }}
+          >
             <TaskCategory title="Pending" count={pendingTasks.length}>
               {pendingTasks.map((task) => (
                 <TaskCard
@@ -177,7 +185,7 @@ export default function UserTasks() {
             </TaskCategory>
           </Flex>
         </Flex>
-      </Box>
+      </PageContainer>
     </Flex>
   );
 }

@@ -16,22 +16,22 @@ export const TaskCategory = ({ title, count, children }: TaskCategoryProps) => {
         minWidth: "280px",
       }}
     >
-      <Flex align="center" gap="2" style={{ marginBottom: "0.5rem" }}>
+      <Flex align="center" gap="3" mb="3">
         <Text size="5" weight="bold">
           {title}
         </Text>
-        <Badge color="gray" size="2">
+        <Badge color="gray" size="2" radius="full">
           {count}
         </Badge>
       </Flex>
       <Card
-        size="2"
+        size="3"
         style={{
           flex: 1,
           display: "flex",
           flexDirection: "column",
-          padding: "1rem",
-          minHeight: "70vh",
+          padding: "1.25rem",
+          minHeight: "60vh",
           maxHeight: "70vh",
         }}
       >
@@ -43,7 +43,7 @@ export const TaskCategory = ({ title, count, children }: TaskCategoryProps) => {
           <Flex direction="column" gap="3">
             {children && children}
             {!children && (
-              <Text size="2" color="gray" align="center" mt="4">
+              <Text size="3" color="gray" align="center" mt="6">
                 No tasks
               </Text>
             )}

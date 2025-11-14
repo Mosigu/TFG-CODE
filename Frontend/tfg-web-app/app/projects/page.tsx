@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Heading, Flex, Box, Button } from "@radix-ui/themes";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { MainMenu } from "../components/MainMenu";
+import { PageContainer } from "../components/PageContainer";
 import { ProjectsTable } from "../components/ProjectsTable";
 import { CreateProjectModal } from "../components/CreateProjectModal";
 import { createProject } from "../utils/work-element-utils";
@@ -35,10 +36,10 @@ export default function ProjectsPage() {
   return (
     <Flex gap="5">
       <MainMenu />
-      <Box width="100%" p="6">
+      <PageContainer>
         <Flex gap="6" direction="column">
-          <Flex justify="between" align="center">
-            <Heading as="h1" size="8" weight="bold">
+          <Flex justify="between" align="center" wrap="wrap" gap="4">
+            <Heading as="h1" size="8" weight="bold" highContrast>
               Projects
             </Heading>
             <Button
@@ -52,7 +53,7 @@ export default function ProjectsPage() {
           </Flex>
           <ProjectsTable key={refreshKey} />
         </Flex>
-      </Box>
+      </PageContainer>
 
       <CreateProjectModal
         open={createModalOpen}
