@@ -48,10 +48,10 @@ export function ProjectsGrid({ projects, loading }: ProjectsGridProps) {
       <Card className="bg-gray-900/50 border border-gray-800 backdrop-blur-sm">
         <Flex direction="column" gap="3" p="4">
           <Text size="4" weight="bold">
-            Proyectos Activos
+            Active Projects
           </Text>
           <Text size="2" className="text-gray-400">
-            Cargando...
+            Loading...
           </Text>
         </Flex>
       </Card>
@@ -63,7 +63,7 @@ export function ProjectsGrid({ projects, loading }: ProjectsGridProps) {
       <Flex direction="column" gap="3" p="4">
         <Flex justify="between" align="center">
           <Text size="4" weight="bold">
-            Proyectos Activos
+            Active Projects
           </Text>
           <Badge color="iris" variant="soft">
             {projects.length}
@@ -72,7 +72,7 @@ export function ProjectsGrid({ projects, loading }: ProjectsGridProps) {
 
         {projects.length === 0 ? (
           <Text size="2" className="text-gray-400 text-center py-8">
-            No tienes proyectos activos
+            No active projects
           </Text>
         ) : (
           <Flex direction="column" gap="3">
@@ -107,7 +107,7 @@ export function ProjectsGrid({ projects, loading }: ProjectsGridProps) {
                     <Flex direction="column" gap="2">
                       <Flex justify="between" align="center">
                         <Text size="1" className="text-gray-500">
-                          Progreso
+                          Progress
                         </Text>
                         <Text size="1" className="text-gray-400">
                           {progress}%
@@ -119,21 +119,15 @@ export function ProjectsGrid({ projects, loading }: ProjectsGridProps) {
                     <Flex gap="4">
                       {project.tasks && (
                         <Flex gap="1" align="center">
-                          <Text size="1" className="text-gray-500">
-                            ✓
-                          </Text>
                           <Text size="2" className="text-gray-400">
-                            {project.tasks.length} tareas
+                            {project.tasks.length} tasks
                           </Text>
                         </Flex>
                       )}
                       {project.users && project.users.length > 0 && (
                         <Flex gap="1" align="center">
-                          <Text size="1" className="text-gray-500">
-                            👥
-                          </Text>
                           <Text size="2" className="text-gray-400">
-                            {project.users.length} miembros
+                            {project.users.length} members
                           </Text>
                         </Flex>
                       )}
@@ -152,7 +146,7 @@ export function ProjectsGrid({ projects, loading }: ProjectsGridProps) {
               className="text-iris-400 cursor-pointer hover:underline"
               onClick={() => router.push("/projects")}
             >
-              Ver todos los proyectos →
+              View all projects
             </Text>
           </Box>
         )}

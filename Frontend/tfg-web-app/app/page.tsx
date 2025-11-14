@@ -140,9 +140,9 @@ export default function Home() {
 
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return "Buenos días";
-    if (hour < 18) return "Buenas tardes";
-    return "Buenas noches";
+    if (hour < 12) return "Good morning";
+    if (hour < 18) return "Good afternoon";
+    return "Good evening";
   };
 
   const getFormattedDate = () => {
@@ -152,7 +152,7 @@ export default function Home() {
       month: "long",
       day: "numeric",
     };
-    return new Date().toLocaleDateString("es-ES", options);
+    return new Date().toLocaleDateString("en-US", options);
   };
 
   return (
@@ -176,27 +176,23 @@ export default function Home() {
           {/* Stats Grid */}
           <Grid columns={{ initial: "1", sm: "2", lg: "4" }} gap="4">
             <StatCard
-              title="Proyectos Activos"
+              title="Active Projects"
               value={loading ? "..." : stats.activeProjects}
-              icon="📁"
               color="iris"
             />
             <StatCard
-              title="Tareas Pendientes"
+              title="Pending Tasks"
               value={loading ? "..." : stats.pendingTasks}
-              icon="⏳"
               color="orange"
             />
             <StatCard
-              title="Completadas Hoy"
+              title="Completed Today"
               value={loading ? "..." : stats.completedToday}
-              icon="✓"
               color="green"
             />
             <StatCard
-              title="Incidencias Abiertas"
+              title="Open Incidents"
               value={loading ? "..." : stats.openIncidences}
-              icon="⚠️"
               color="red"
             />
           </Grid>
