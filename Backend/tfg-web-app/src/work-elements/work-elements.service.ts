@@ -26,11 +26,7 @@ export class WorkElementsService {
   ) {}
 
   async getAllProjects(): Promise<Project[]> {
-    return this.prisma.project.findMany({
-      include: {
-        users: { include: { user: true } },
-      },
-    } as any);
+    return this.prisma.project.findMany();
   }
 
   async getProjectById(id: string): Promise<Project> {
@@ -49,20 +45,8 @@ export class WorkElementsService {
     createProjectDto: CreateProjectDto,
     userId: string,
   ): Promise<Project> {
-    // Create project and assign creator as owner
     const project = await this.prisma.project.create({
-      data: {
-        ...createProjectDto,
-        users: {
-          create: {
-            userId: userId,
-            role: 'owner',
-          },
-        },
-      },
-      include: {
-        users: { include: { user: true } },
-      },
+      data: createProjectDto,
     } as any);
 
     try {
@@ -207,9 +191,8 @@ export class WorkElementsService {
     }
   }
 
-  async getAllTasks(projectId?: string): Promise<Task[]> {
+  async getAllTasks(): Promise<Task[]> {
     return this.prisma.task.findMany({
-      where: projectId ? { projectId } : undefined,
       include: {
         project: true,
         createdBy: true,
