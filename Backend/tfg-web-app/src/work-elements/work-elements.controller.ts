@@ -68,17 +68,12 @@ export class WorkElementsController {
     @CurrentUser() user: { userId: string; email: string },
   ) {
     try {
-      console.log('Creating project with:', createProjectDto);
       const result = await this.workElementsService.createProject(
         createProjectDto,
         user.userId,
       );
-      console.log('Project created:', result);
       return result;
     } catch (error: any) {
-      console.error('ERROR:', error);
-      console.error('ERROR MESSAGE:', error.message);
-      console.error('ERROR STACK:', error.stack);
       throw new HttpException(
         error.message || 'Failed to create project',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -94,8 +89,6 @@ export class WorkElementsController {
     @CurrentUser() user: { userId: string; email: string },
   ) {
     try {
-      console.log('Updating project:', id);
-      console.log('Update data:', updateProjectDto);
       return await this.workElementsService.updateProject(
         id,
         updateProjectDto,
@@ -181,20 +174,14 @@ export class WorkElementsController {
     @CurrentUser() user: { userId: string; email: string },
   ) {
     try {
-      console.log('Creating task with DTO:', createTaskDto);
-      console.log('User ID:', user.userId);
 
       const result = await this.workElementsService.createTask(
         createTaskDto,
         user.userId,
       );
 
-      console.log('Task created successfully:', result);
       return result;
     } catch (error: any) {
-      console.error('ERROR CREATING TASK:', error);
-      console.error('ERROR MESSAGE:', error.message);
-      console.error('ERROR STACK:', error.stack);
       throw new HttpException(
         error.message || 'Failed to create task',
         HttpStatus.INTERNAL_SERVER_ERROR,
