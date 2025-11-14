@@ -468,14 +468,14 @@ export default function ProjectDetailPage() {
                           fallback={participant.user?.name?.[0] || "U"}
                           radius="full"
                         />
-                        <Box>
+                        <Flex direction="column" gap="1">
                           <Text size="2" weight="medium">
                             {participant.user?.name || "Unknown User"}
                           </Text>
                           <Text size="1" color="gray">
                             {participant.user?.email}
                           </Text>
-                        </Box>
+                        </Flex>
                       </Flex>
                       <Flex gap="2" align="center">
                         <Badge color={getRoleBadgeColor(participant.role)}>

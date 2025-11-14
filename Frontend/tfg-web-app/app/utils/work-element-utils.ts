@@ -320,7 +320,7 @@ export async function createMilestone(data: any) {
 
 export async function createIncidence(data: any) {
   try {
-    const response = await apiClient.post("/work-elements/incidences", data);
+    const response = await apiClient.post("/work-elements/incidents", data);
     return response.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error) && error.response) {
