@@ -1,15 +1,11 @@
-import { IsString, IsNotEmpty, IsOptional, IsEnum } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateUserTaskDto {
   @IsNotEmpty()
   @IsString()
   userId: string;
 
-  @IsNotEmpty()
-  @IsString()
-  taskId: string;
-
   @IsOptional()
-  @IsEnum(['owner', 'contributor', 'reviewer'])
+  @IsString()
   role?: string;
 }
