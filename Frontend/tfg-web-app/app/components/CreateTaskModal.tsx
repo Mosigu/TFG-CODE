@@ -64,7 +64,6 @@ export function CreateTaskModal({
       projectId: projectId,
     };
 
-    // Solo agregar campos opcionales si tienen valor
     if (formData.description.trim()) {
       dataToSend.description = formData.description;
     }
@@ -77,10 +76,8 @@ export function CreateTaskModal({
       dataToSend.endDate = new Date(formData.endDate).toISOString();
     }
 
-    console.log("Creating task with:", dataToSend);
     onSave(dataToSend);
 
-    // Reset form
     setFormData({
       title: "",
       description: "",

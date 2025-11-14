@@ -62,7 +62,6 @@ export function AddCollaboratorModal({
   const fetchUsers = async () => {
     try {
       const allUsers = await getAllUsers();
-      // Filter out users that are already collaborators
       const availableUsers = allUsers.filter(
         (user: User) => !currentUserIds.includes(user.id)
       );

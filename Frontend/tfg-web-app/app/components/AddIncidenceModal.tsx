@@ -45,11 +45,9 @@ export function AddIncidenceModal({
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // Update form when incidence changes or modal opens
   useEffect(() => {
     if (open) {
       if (incidence) {
-        // Modo edición - cargar datos de la incidence
         setFormData({
           title: incidence.title || "",
           description: incidence.description || "",
@@ -57,7 +55,6 @@ export function AddIncidenceModal({
           priority: incidence.priority || "medium",
         });
       } else {
-        // Modo crear - limpiar formulario
         setFormData({
           title: "",
           description: "",
@@ -85,7 +82,6 @@ export function AddIncidenceModal({
       return;
     }
 
-    // Si estamos editando, el payload es diferente
     if (isEditMode && incidence) {
       const dataToSend: any = {
         title: formData.title,
@@ -97,11 +93,8 @@ export function AddIncidenceModal({
         dataToSend.description = formData.description;
       }
 
-      console.log("Updating incidence:", incidence.id, dataToSend);
-      // Incluir el ID en el objeto para que el handler lo use
       onSave({ id: incidence.id, ...dataToSend });
     } else {
-      // Crear nueva incidence
       const dataToSend: any = {
         title: formData.title,
         taskId: taskId,
@@ -113,11 +106,8 @@ export function AddIncidenceModal({
         dataToSend.description = formData.description;
       }
 
-      console.log("Creating incidence:", dataToSend);
       onSave(dataToSend);
     }
-
-    // Reset form
     setFormData({
       title: "",
       description: "",

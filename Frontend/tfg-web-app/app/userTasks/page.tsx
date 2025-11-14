@@ -13,7 +13,6 @@ import {
   getCurrentUser,
 } from "../utils/work-element-utils";
 
-// Usuario por defecto (mismo que usas en el backend)
 const DEFAULT_USER_ID = "default-user";
 
 interface Task {
@@ -44,7 +43,6 @@ export default function UserTasks() {
 
     const fetchTasks = async () => {
       try {
-        // Get current user ID from localStorage
         const currentUser = getCurrentUser();
         const userId = currentUser?.id || DEFAULT_USER_ID;
         const data = await getMyTasks(userId);

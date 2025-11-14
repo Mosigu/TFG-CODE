@@ -47,7 +47,6 @@ export default function ActivityPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Check authentication
     if (!isAuthenticated()) {
       router.push("/login");
       return;
