@@ -17,50 +17,38 @@ interface ActivityFeedProps {
 }
 
 export function ActivityFeed({ activities, loading }: ActivityFeedProps) {
-  const formatTime = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diff = now.getTime() - date.getTime();
-    const minutes = Math.floor(diff / 60000);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-
-    if (days > 0) return `${days}d ago`;
-    if (hours > 0) return `${hours}h ago`;
-    if (minutes > 0) return `${minutes}m ago`;
-    return "now";
-  };
-
   const getActionColor = (action: string) => {
     if (!action) return "gray";
-    switch (action.toLowerCase()) {
-      case "created":
-        return "green";
-      case "updated":
-        return "blue";
-      case "deleted":
-        return "red";
-      case "completed":
-        return "purple";
-      default:
-        return "gray";
-    }
+    const actionLower = action.toLowerCase();
+    if (actionLower.includes("created")) return "green";
+    if (actionLower.includes("updated") || actionLower.includes("changed")) return "blue";
+    if (actionLower.includes("deleted") || actionLower.includes("removed")) return "red";
+    if (actionLower.includes("completed")) return "purple";
+    if (actionLower.includes("assigned")) return "iris";
+    return "gray";
+  };
+
+  const getActionText = (action: string) => {
+    if (!action) return "Activity";
+    const actionLower = action.toLowerCase();
+    if (actionLower === "created") return "Created";
+    if (actionLower === "updated") return "Updated";
+    if (actionLower === "deleted") return "Deleted";
+    if (actionLower === "completed") return "Completed";
+    if (actionLower === "status_changed") return "Status changed";
+    if (actionLower === "user_assigned") return "User assigned";
+    if (actionLower === "user_removed") return "User removed";
+    return action.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
   };
 
   const getTypeBadge = (type: string) => {
-    if (!type) return "Item";
-    switch (type.toLowerCase()) {
-      case "project":
-        return "Project";
-      case "task":
-        return "Task";
-      case "incident":
-        return "Incident";
-      case "milestone":
-        return "Milestone";
-      default:
-        return type;
-    }
+    if (!type) return "Activity";
+    const typeLower = type.toLowerCase();
+    if (typeLower.includes("project")) return "Project";
+    if (typeLower.includes("task")) return "Task";
+    if (typeLower.includes("incident")) return "Incident";
+    if (typeLower.includes("milestone")) return "Milestone";
+    return type.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
   };
 
   if (loading) {
@@ -102,18 +90,18 @@ export function ActivityFeed({ activities, loading }: ActivityFeedProps) {
                   key={activity.id}
                   className="p-3 rounded-lg bg-gray-800/50 hover:bg-gray-800 transition-colors border border-gray-700/50"
                 >
-                  <Flex gap="3" align="start">
-                    <Badge color="gray" variant="surface" size="1">
-                      {getTypeBadge(activity.workElementType)}
-                    </Badge>
+                  <Flex gap="3" align="center">
                     <Flex direction="column" gap="1" style={{ flex: 1 }}>
-                      <Flex gap="2" align="center">
+                      <Flex gap="2" align="center" wrap="wrap">
                         <Badge
                           color={getActionColor(activity.action)}
                           variant="soft"
-                          size="1"
+                          size="2"
                         >
-                          {activity.action}
+                          {getActionText(activity.action)}
+                        </Badge>
+                        <Badge color="gray" variant="surface" size="2">
+                          {getTypeBadge(activity.workElementType)}
                         </Badge>
                       </Flex>
                       <Text size="2" weight="medium">
@@ -125,9 +113,6 @@ export function ActivityFeed({ activities, loading }: ActivityFeedProps) {
                         </Text>
                       )}
                     </Flex>
-                    <Text size="1" className="text-gray-500">
-                      {formatTime(activity.createdAt)}
-                    </Text>
                   </Flex>
                 </Box>
               ))

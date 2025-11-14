@@ -7,7 +7,6 @@ import { MainMenu } from "./components/MainMenu";
 import { PageContainer } from "./components/PageContainer";
 import { StatCard } from "./components/StatCard";
 import { ActivityFeed } from "./components/ActivityFeed";
-import { QuickActions } from "./components/QuickActions";
 import { ProjectsGrid } from "./components/ProjectsGrid";
 import {
   getProjects,
@@ -196,9 +195,6 @@ export default function Home() {
               color="red"
             />
           </Grid>
-
-          {/* Quick Actions */}
-          <QuickActions />
 
           {/* Main Content Grid */}
           <Grid
