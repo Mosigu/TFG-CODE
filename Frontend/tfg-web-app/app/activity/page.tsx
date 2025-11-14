@@ -109,7 +109,7 @@ export default function ActivityPage() {
     <Flex gap="5">
       <MainMenu />
       <PageContainer maxWidth="1000px">
-        <Flex direction="column" gap="6">
+        <Flex direction="column" gap="6" style={{ height: "100vh" }}>
           <Heading as="h1" size="8" weight="bold" highContrast>
             Activity Feed
           </Heading>
@@ -123,64 +123,72 @@ export default function ActivityPage() {
               </Text>
             </Card>
           ) : (
-            <Flex direction="column" gap="3">
-              {activities.map((activity) => {
-                const user = users[activity.agentId];
-                const userName = user
-                  ? `${user.name || ""} ${user.surname || ""}`.trim() ||
-                    user.email
-                  : "Unknown User";
-                const userInitial = user
-                  ? (user.name || user.email).charAt(0).toUpperCase()
-                  : "?";
+            <Box
+              style={{
+                flex: 1,
+                overflowY: "auto",
+                paddingRight: "8px",
+              }}
+            >
+              <Flex direction="column" gap="3">
+                {activities.map((activity) => {
+                  const user = users[activity.agentId];
+                  const userName = user
+                    ? `${user.name || ""} ${user.surname || ""}`.trim() ||
+                      user.email
+                    : "Unknown User";
+                  const userInitial = user
+                    ? (user.name || user.email).charAt(0).toUpperCase()
+                    : "?";
 
-                return (
-                  <Card key={activity.id} size="3">
-                    <Flex direction="column" gap="3">
-                      <Flex align="center" justify="between" wrap="wrap" gap="3">
-                        <Flex gap="3" align="center">
-                          <Avatar
-                            size="3"
-                            src={user?.profilePictureURL}
-                            radius="full"
-                            fallback={userInitial}
-                            color="blue"
-                          />
-                          <Flex direction="column" gap="1">
-                            <Text size="3" weight="bold">
-                              {userName}
-                            </Text>
-                            <Flex gap="2" align="center" wrap="wrap">
-                              <Badge
-                                color={getActionColor(activity.action)}
-                                size="2"
-                              >
-                                {activity.action}
-                              </Badge>
-                              <Text size="2" color="gray">
-                                {activity.entityType}
+                  return (
+                    <Card key={activity.id} size="3">
+                      <Flex direction="column" gap="3">
+                        <Flex align="center" justify="between" wrap="wrap" gap="3">
+                          <Flex gap="3" align="center">
+                            <Avatar
+                              size="3"
+                              src={user?.profilePictureURL}
+                              radius="full"
+                              fallback={userInitial}
+                              color="blue"
+                            />
+                            <Flex direction="column" gap="1">
+                              <Text size="3" weight="bold">
+                                {userName}
                               </Text>
+                              <Flex gap="2" align="center" wrap="wrap">
+                                <Badge
+                                  color={getActionColor(activity.action)}
+                                  size="2"
+                                >
+                                  {activity.action}
+                                </Badge>
+                                <Text size="2" color="gray">
+                                  {activity.entityType}
+                                </Text>
+                              </Flex>
                             </Flex>
                           </Flex>
+                          <Text size="2" color="gray">
+                            {formatDate(activity.createdAt)}
+                          </Text>
                         </Flex>
-                        <Text size="2" color="gray">
-                          {formatDate(activity.createdAt)}
-                        </Text>
+
+                        <Text size="3">{activity.description}</Text>
+
+                        {activity.relatedEntityType && (
+                          <Text size="2" color="gray">
+                            Related: {activity.relatedEntityType} (ID:{" "}
+                            {activity.relatedEntityId})
+                          </Text>
+                        )}
                       </Flex>
-
-                      <Text size="3">{activity.description}</Text>
-
-                      {activity.relatedEntityType && (
-                        <Text size="2" color="gray">
-                          Related: {activity.relatedEntityType} (ID:{" "}
-                          {activity.relatedEntityId})
-                        </Text>
-                      )}
-                    </Flex>
-                  </Card>
-                );
-              })}
-            </Flex>
+                    </Card>
+                  );
+                })}
+              </Flex>
+            </Box>
           )}
         </Flex>
       </PageContainer>
