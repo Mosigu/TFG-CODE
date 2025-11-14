@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: tfg-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: tfguser
+      POSTGRES_PASSWORD: tfgpassword
+      POSTGRES_DB: tfgdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tfguser -d tfgdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./Backend/tfg-web-app
+      dockerfile: Dockerfile
+    container_name: tfg-backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://tfguser:tfgpassword@postgres:5432/tfgdb
+      JWT_SECRET: your-production-secret-key-change-this
+      PORT: 4000
+      NODE_ENV: production
+    ports:
+      - "4000:4000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:4000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  frontend:
+    build:
+      context: ./Frontend/tfg-web-app
+      dockerfile: Dockerfile
+    container_name: tfg-frontend
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_BASE_URL: http://backend:4000
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
