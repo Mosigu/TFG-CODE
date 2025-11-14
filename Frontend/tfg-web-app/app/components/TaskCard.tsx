@@ -66,7 +66,7 @@ export const TaskCard = ({
 
         {projectTitle && (
           <Text size="2" color="gray">
-            📁 {projectTitle}
+            {projectTitle}
           </Text>
         )}
 
