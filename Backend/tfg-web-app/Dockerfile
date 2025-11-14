@@ -1,0 +1,39 @@
+FROM node:20-alpine AS base
+
+WORKDIR /app
+
+COPY package*.json ./
+COPY pnpm-lock.yaml ./
+
+FROM base AS dependencies
+
+RUN npm install -g pnpm
+RUN pnpm install --frozen-lockfile
+
+FROM base AS build
+
+RUN npm install -g pnpm
+COPY --from=dependencies /app/node_modules ./node_modules
+COPY . .
+
+RUN npx prisma generate
+RUN pnpm run build
+
+FROM node:20-alpine AS production
+
+WORKDIR /app
+
+RUN npm install -g pnpm
+
+COPY package*.json ./
+COPY pnpm-lock.yaml ./
+
+RUN pnpm install --prod --frozen-lockfile
+
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=build /app/prisma ./prisma
+
+EXPOSE 4000
+
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main"]

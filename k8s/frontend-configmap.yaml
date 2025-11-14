@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+  namespace: tfg-app
+data:
+  NEXT_PUBLIC_BASE_URL: "http://backend:4000"
+  NODE_ENV: "production"
