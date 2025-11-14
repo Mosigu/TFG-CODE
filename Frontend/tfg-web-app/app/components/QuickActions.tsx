@@ -8,26 +8,22 @@ export function QuickActions() {
 
   const actions = [
     {
-      label: "Nuevo Proyecto",
-      icon: "📁",
+      label: "New Project",
       color: "iris" as const,
       onClick: () => router.push("/projects?action=create"),
     },
     {
-      label: "Nueva Tarea",
-      icon: "✓",
+      label: "New Task",
       color: "blue" as const,
       onClick: () => router.push("/userTasks?action=create"),
     },
     {
-      label: "Ver Actividad",
-      icon: "📊",
+      label: "View Activity",
       color: "green" as const,
       onClick: () => router.push("/activity"),
     },
     {
-      label: "Mi Perfil",
-      icon: "👤",
+      label: "My Profile",
       color: "purple" as const,
       onClick: () => router.push("/profile"),
     },
@@ -37,7 +33,7 @@ export function QuickActions() {
     <Card className="bg-gray-900/50 border border-gray-800 backdrop-blur-sm">
       <Flex direction="column" gap="3" p="4">
         <Text size="4" weight="bold">
-          Acciones Rápidas
+          Quick Actions
         </Text>
 
         <Flex gap="2" wrap="wrap">
@@ -49,12 +45,9 @@ export function QuickActions() {
               onClick={action.onClick}
               className="flex-1 min-w-[140px] cursor-pointer hover:scale-105 transition-transform"
             >
-              <Flex gap="2" align="center">
-                <Text size="4">{action.icon}</Text>
-                <Text size="2" weight="medium">
-                  {action.label}
-                </Text>
-              </Flex>
+              <Text size="2" weight="medium">
+                {action.label}
+              </Text>
             </Button>
           ))}
         </Flex>
