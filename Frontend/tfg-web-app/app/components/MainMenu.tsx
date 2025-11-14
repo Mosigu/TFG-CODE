@@ -12,7 +12,15 @@ import Link from "next/link";
 
 export const MainMenu = () => {
   return (
-    <Box width="7vw" height="100vh">
+    <Box
+      width="80px"
+      height="100vh"
+      style={{
+        minWidth: "80px",
+        maxWidth: "80px",
+        flexShrink: 0,
+      }}
+    >
       <Card
         style={{
           height: "100%",
