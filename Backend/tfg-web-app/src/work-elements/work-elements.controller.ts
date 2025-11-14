@@ -150,9 +150,10 @@ export class WorkElementsController {
   }
 
   @Get('tasks')
-  async getAllTasks() {
+  async getAllTasks(@Req() req: Request) {
     try {
-      return await this.workElementsService.getAllTasks();
+      const projectId = req.query.projectId as string | undefined;
+      return await this.workElementsService.getAllTasks(projectId);
     } catch (error) {
       throw new HttpException(
         'Failed to fetch tasks',
