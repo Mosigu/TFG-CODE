@@ -49,7 +49,6 @@ export class WorkElementsService {
     createProjectDto: CreateProjectDto,
     userId: string,
   ): Promise<Project> {
-    // Create project and assign creator as owner
     const project = await this.prisma.project.create({
       data: {
         ...createProjectDto,
@@ -87,13 +86,8 @@ export class WorkElementsService {
     userId: string,
   ): Promise<Project> {
     try {
-      console.log('Service: Updating project', id);
-      console.log('Service: Update data', updateProjectDto);
-
-      // Verify that the project exists
       await this.getProjectById(id);
 
-      console.log('Service: Project found, updating...');
       const project = await this.prisma.project.update({
         where: { id },
         data: updateProjectDto,
@@ -103,7 +97,6 @@ export class WorkElementsService {
         },
       } as any);
 
-      console.log('Service: Project updated, logging activity...');
       try {
         await this.activityService.logProjectUpdated(
           userId,
@@ -118,7 +111,6 @@ export class WorkElementsService {
         );
       }
 
-      console.log('Service: Update completed successfully');
       return project;
     } catch (error: any) {
       console.error('Error in updateProject service:', error);
@@ -131,59 +123,38 @@ export class WorkElementsService {
   async deleteProject(id: string, userId: string): Promise<Project> {
     try {
       const project = await this.getProjectById(id);
-
-      console.log('Deleting project:', id);
-
-      console.log('Deleting user-project relations...');
       await this.prisma.userProject.deleteMany({
         where: { projectId: id },
       });
 
-      console.log('Finding tasks...');
       const tasks = await this.prisma.task.findMany({
         where: { projectId: id },
       });
-
-      console.log(`Found ${tasks.length} tasks to delete`);
-
       for (const task of tasks) {
-        console.log(`Processing task ${task.id}...`);
-
-        // Delete user-task relations
         await this.prisma.userTask.deleteMany({
           where: { taskId: task.id },
         });
 
-        // Delete comments
         await this.prisma.comment.deleteMany({
           where: { taskId: task.id },
         });
 
-        // Delete incidences
         await this.prisma.incidence.deleteMany({
           where: { taskId: task.id },
         });
 
-        // Delete milestones
         await this.prisma.milestone.deleteMany({
           where: { taskId: task.id },
         });
       }
-
-      // Delete all tasks
-      console.log('Deleting tasks...');
       await this.prisma.task.deleteMany({
         where: { projectId: id },
       });
 
-      // Delete the project
-      console.log('Deleting project...');
       const deleted = await this.prisma.project.delete({
         where: { id },
       });
 
-      // Log activity
-      console.log('Logging activity...');
       try {
         await this.activityService.logProjectDeleted(
           userId,
@@ -197,7 +168,6 @@ export class WorkElementsService {
         );
       }
 
-      console.log('Project deleted successfully');
       return deleted;
     } catch (error: any) {
       console.error('Error in deleteProject service:', error);
