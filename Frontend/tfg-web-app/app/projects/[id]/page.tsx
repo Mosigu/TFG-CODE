@@ -461,7 +461,7 @@ export default function ProjectDetailPage() {
               {participants.length > 0 ? (
                 <Flex direction="column" gap="3">
                   {participants.map((participant) => (
-                    <Flex key={participant.id} align="center" justify="between">
+                    <Flex key={`${participant.id}-${participant.userId}`} align="center" justify="between">
                       <Flex align="center" gap="3">
                         <Avatar
                           size="2"
