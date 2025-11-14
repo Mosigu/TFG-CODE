@@ -58,19 +58,16 @@ export function EditProjectModal({
     if (formData.status && formData.status !== project.status)
       dataToSend.status = formData.status;
 
-    // Start Date
     if (formData.startDate) {
       const isoStart = new Date(formData.startDate).toISOString();
       if (isoStart !== project.startDate) dataToSend.startDate = isoStart;
     }
 
-    // End Date
     if (formData.endDate) {
       const isoEnd = new Date(formData.endDate).toISOString();
       if (isoEnd !== project.endDate) dataToSend.endDate = isoEnd;
     }
 
-    console.log("Data to send:", dataToSend);
     onSave(dataToSend);
   };
 

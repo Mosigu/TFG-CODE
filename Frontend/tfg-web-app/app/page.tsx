@@ -62,13 +62,11 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    // Check authentication
     if (!isAuthenticated()) {
       router.push("/login");
       return;
     }
 
-    // Get current user
     const user = getCurrentUser();
     setCurrentUser(user);
 

@@ -63,7 +63,6 @@ export function CreateProjectModal({
       status: formData.status,
     };
 
-    // Solo agregar campos opcionales si tienen valor
     if (formData.description.trim()) {
       dataToSend.description = formData.description;
     }
@@ -76,10 +75,8 @@ export function CreateProjectModal({
       dataToSend.endDate = new Date(formData.endDate).toISOString();
     }
 
-    console.log("Creating project with:", dataToSend);
     onSave(dataToSend);
 
-    // Reset form
     setFormData({
       title: "",
       description: "",

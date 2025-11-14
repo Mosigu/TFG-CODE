@@ -45,11 +45,9 @@ export function AddMilestoneModal({
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // Update form when milestone changes or modal opens
   useEffect(() => {
     if (open) {
       if (milestone) {
-        // Modo edición - cargar datos del milestone
         setFormData({
           title: milestone.title || "",
           description: milestone.description || "",
@@ -59,7 +57,6 @@ export function AddMilestoneModal({
           isCompleted: milestone.isCompleted || false,
         });
       } else {
-        // Modo crear - limpiar formulario
         setFormData({
           title: "",
           description: "",
@@ -87,7 +84,6 @@ export function AddMilestoneModal({
       return;
     }
 
-    // Si estamos editando, el payload es diferente
     if (isEditMode && milestone) {
       const dataToSend: any = {
         title: formData.title,
@@ -102,11 +98,8 @@ export function AddMilestoneModal({
         dataToSend.dueDate = new Date(formData.dueDate).toISOString();
       }
 
-      console.log("Updating milestone:", milestone.id, dataToSend);
-      // Incluir el ID en el objeto para que el handler lo use
       onSave({ id: milestone.id, ...dataToSend });
     } else {
-      // Crear nuevo milestone
       const dataToSend: any = {
         title: formData.title,
         taskId: taskId,
@@ -121,11 +114,8 @@ export function AddMilestoneModal({
         dataToSend.dueDate = new Date(formData.dueDate).toISOString();
       }
 
-      console.log("Creating milestone:", dataToSend);
       onSave(dataToSend);
     }
-
-    // Reset form
     setFormData({
       title: "",
       description: "",

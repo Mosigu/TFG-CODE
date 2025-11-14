@@ -63,19 +63,16 @@ export const ProjectsTable = () => {
   useEffect(() => {
     let filtered = [...projects];
 
-    // Filter by status
     if (statusFilter !== "all") {
       filtered = filtered.filter(
         (project) => project.status?.toLowerCase() === statusFilter
       );
     }
 
-    // Filter by type
     if (typeFilter !== "all") {
       filtered = filtered.filter((project) => project.type === typeFilter);
     }
 
-    // Apply current sort
     filtered.sort((a, b) => {
       if (!a.endDate) return 1;
       if (!b.endDate) return -1;
