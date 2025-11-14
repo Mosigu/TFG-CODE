@@ -463,22 +463,11 @@ export async function getMyTasks(userId: string) {
     const projectsResponse = await apiClient.get("/work-elements/projects");
     const allProjects = projectsResponse.data;
 
-    // 2. Filtrar proyectos donde el usuario está asignado
     const myProjects = allProjects.filter((project: any) => {
-      const hasUsers = project.users && project.users.length > 0;
-        hasUsers,
-        users: project.users,
-        match: project.users?.some((up: any) => up.userId === userId),
-      });
       return project.users?.some(
         (userProject: any) => userProject.userId === userId
       );
     });
-
-    console.log(
-      "✅ [getMyTasks] My projects details:",
-      myProjects.map((p: any) => ({ id: p.id, title: p.title }))
-    );
 
     if (myProjects.length === 0) {
       return [];
@@ -487,17 +476,10 @@ export async function getMyTasks(userId: string) {
     // 3. Obtener tareas de cada proyecto
     const allTasksPromises = myProjects.map(async (project: any) => {
       try {
-        console.log(
-          `  📋 Fetching tasks for project: ${project.title} (${project.id})`
-        );
         const tasks = await getProjectTasks(project.id);
-        console.log(`  Tasks:`, tasks);
         return tasks;
       } catch (error) {
-        console.error(
-          `  ❌ Error fetching tasks for project ${project.id}:`,
-          error
-        );
+        console.error(`Error fetching tasks for project ${project.id}:`, error);
         return [];
       }
     });
