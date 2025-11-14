@@ -110,46 +110,46 @@ export default function ProfilePage() {
 
               {/* User info */}
               <Flex direction="column" gap="4">
-                <Box>
-                  <Text size="2" weight="bold" color="gray" mb="1">
+                <Flex direction="column" gap="2">
+                  <Text size="2" weight="bold" color="gray">
                     User ID
                   </Text>
                   <Text size="3">{user.id}</Text>
-                </Box>
+                </Flex>
 
-                <Box>
-                  <Text size="2" weight="bold" color="gray" mb="1">
+                <Flex direction="column" gap="2">
+                  <Text size="2" weight="bold" color="gray">
                     Email
                   </Text>
                   <Text size="3">{user.email}</Text>
-                </Box>
+                </Flex>
 
                 {user.name && (
-                  <Box>
-                    <Text size="2" weight="bold" color="gray" mb="1">
+                  <Flex direction="column" gap="2">
+                    <Text size="2" weight="bold" color="gray">
                       Name
                     </Text>
                     <Text size="3">{user.name}</Text>
-                  </Box>
+                  </Flex>
                 )}
 
                 {user.surname && (
-                  <Box>
-                    <Text size="2" weight="bold" color="gray" mb="1">
+                  <Flex direction="column" gap="2">
+                    <Text size="2" weight="bold" color="gray">
                       Surname
                     </Text>
                     <Text size="3">{user.surname}</Text>
-                  </Box>
+                  </Flex>
                 )}
 
-                <Box>
-                  <Text size="2" weight="bold" color="gray" mb="1">
+                <Flex direction="column" gap="2">
+                  <Text size="2" weight="bold" color="gray">
                     Role
                   </Text>
                   <Text size="3" style={{ textTransform: "capitalize" }}>
                     {user.role || "contributor"}
                   </Text>
-                </Box>
+                </Flex>
               </Flex>
 
               {/* Logout button */}

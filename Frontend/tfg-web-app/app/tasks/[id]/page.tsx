@@ -510,21 +510,21 @@ export default function TaskDetailPage() {
                 {task.users && task.users.length > 0 ? (
                   <Flex direction="column" gap="3">
                     {task.users.map((userTask) => (
-                      <Flex key={userTask.id} align="center" justify="between">
+                      <Flex key={`${userTask.id}-${userTask.userId}`} align="center" justify="between">
                         <Flex align="center" gap="3">
                           <Avatar
                             size="2"
                             fallback={userTask.user.name?.[0] || "U"}
                             radius="full"
                           />
-                          <Box>
+                          <Flex direction="column" gap="1">
                             <Text size="2" weight="medium">
                               {userTask.user.name} {userTask.user.surname}
                             </Text>
                             <Text size="1" color="gray">
                               {userTask.user.email}
                             </Text>
-                          </Box>
+                          </Flex>
                         </Flex>
                         <Flex gap="2" align="center">
                           <Badge color="blue">{userTask.role}</Badge>
