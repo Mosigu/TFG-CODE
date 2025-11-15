@@ -458,8 +458,6 @@ export async function getAllTasks() {
 
 export async function getMyTasks(userId: string) {
   try {
-
-    // 1. Obtener todos los proyectos
     const projectsResponse = await apiClient.get("/work-elements/projects");
     const allProjects = projectsResponse.data;
 
@@ -473,7 +471,6 @@ export async function getMyTasks(userId: string) {
       return [];
     }
 
-    // 3. Obtener tareas de cada proyecto
     const allTasksPromises = myProjects.map(async (project: any) => {
       try {
         const tasks = await getProjectTasks(project.id);
