@@ -24,6 +24,7 @@ RUN pnpm install --prod --frozen-lockfile
 RUN npx prisma generate
 
 COPY --from=build /app/dist ./dist
+COPY seed.js ./
 
 EXPOSE 4000
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/src/main"]
+CMD ["sh", "-c", "npx prisma migrate deploy && node seed.js && node dist/src/main"]
