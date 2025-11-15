@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: gcr.io/iron-zodiac-478222-b5/tfg-frontend:latest
+        image: GCR_REGISTRY/tfg-frontend:latest
         ports:
         - containerPort: 3000
         envFrom:

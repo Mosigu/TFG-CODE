@@ -87,11 +87,40 @@ npm run dev
 
 ## Kubernetes Deployment (GKE)
 
+### Prerequisites
+- GKE cluster running
+- `kubectl` configured
+- `gcloud` authenticated
+
+### Deploy
+
 ```bash
 git clone https://github.com/Mosigu/TFG-CODE.git
 cd TFG-CODE
 ./deploy.sh
 ```
+
+### Enable HTTPS (Optional)
+
+1. **Reserve static IP**
+   ```bash
+   gcloud compute addresses create tfg-app-ip --global
+   gcloud compute addresses describe tfg-app-ip --global
+   ```
+
+2. **Configure DNS**
+   - Point your domain to the static IP
+
+3. **Update Ingress**
+   ```bash
+   # Edit k8s/ingress.yaml and replace YOUR_DOMAIN_HERE with your domain
+   kubectl apply -f k8s/ingress.yaml
+   ```
+
+4. **Wait for certificate** (5-15 minutes)
+   ```bash
+   kubectl describe managedcertificate tfg-cert -n tfg-app
+   ```
 
 ### Default Login
 - **Email**: `dev2@example.com`
@@ -109,6 +138,7 @@ kubectl logs -l app=frontend -n tfg-app --tail=50
 
 # Get application URL
 kubectl get svc frontend -n tfg-app
+kubectl get ingress -n tfg-app
 
 # Delete deployment
 kubectl delete namespace tfg-app
