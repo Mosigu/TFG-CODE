@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BASE_URL, // http://localhost:4000
+  baseURL: "/api", // Proxy to backend via Next.js API routes
   headers: {
     "Content-Type": "application/json",
   },
