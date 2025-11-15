@@ -85,35 +85,63 @@ cp .env.example .env
 npm run dev
 ```
 
-## Kubernetes Deployment
+## Kubernetes Deployment (GKE)
 
-See [k8s/README.md](k8s/README.md) for detailed Kubernetes deployment instructions.
+### Prerequisites
+- GKE cluster running
+- `kubectl` configured
+- `gcloud` authenticated
 
-### Quick Deploy
+### Deploy
 
 ```bash
-# Build and push images
-docker build -t your-registry/tfg-backend:latest ./Backend/tfg-web-app
-docker build -t your-registry/tfg-frontend:latest ./Frontend/tfg-web-app
-docker push your-registry/tfg-backend:latest
-docker push your-registry/tfg-frontend:latest
+git clone https://github.com/Mosigu/TFG-CODE.git
+cd TFG-CODE
+./deploy.sh
+```
 
-# Update image references in k8s manifests
-# Edit k8s/backend-deployment.yaml and k8s/frontend-deployment.yaml
+### Enable HTTPS (Optional)
 
-# Deploy
-kubectl apply -f k8s/namespace.yaml
-kubectl apply -f k8s/postgres-secret.yaml
-kubectl apply -f k8s/postgres-pvc.yaml
-kubectl apply -f k8s/postgres-deployment.yaml
-kubectl apply -f k8s/postgres-service.yaml
-kubectl apply -f k8s/backend-secret.yaml
-kubectl apply -f k8s/backend-configmap.yaml
-kubectl apply -f k8s/backend-deployment.yaml
-kubectl apply -f k8s/backend-service.yaml
-kubectl apply -f k8s/frontend-configmap.yaml
-kubectl apply -f k8s/frontend-deployment.yaml
-kubectl apply -f k8s/frontend-service.yaml
+1. **Reserve static IP**
+   ```bash
+   gcloud compute addresses create tfg-app-ip --global
+   gcloud compute addresses describe tfg-app-ip --global
+   ```
+
+2. **Configure DNS**
+   - Point your domain to the static IP
+
+3. **Update Ingress**
+   ```bash
+   # Edit k8s/ingress.yaml and replace YOUR_DOMAIN_HERE with your domain
+   kubectl apply -f k8s/ingress.yaml
+   ```
+
+4. **Wait for certificate** (5-15 minutes)
+   ```bash
+   kubectl describe managedcertificate tfg-cert -n tfg-app
+   ```
+
+### Default Login
+- **Email**: `dev2@example.com`
+- **Password**: `password123`
+
+### Useful Commands
+
+```bash
+# Check pods
+kubectl get pods -n tfg-app
+
+# View logs
+kubectl logs -l app=backend -n tfg-app --tail=50
+kubectl logs -l app=frontend -n tfg-app --tail=50
+
+# Get application URL
+kubectl get svc frontend -n tfg-app
+kubectl get ingress -n tfg-app
+
+# Delete deployment
+kubectl delete namespace tfg-app
 ```
 
 ## Project Structure

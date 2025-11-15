@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: your-registry/tfg-backend:latest
+        image: GCR_REGISTRY/tfg-backend:latest
         ports:
         - containerPort: 4000
         envFrom:
