@@ -20,7 +20,7 @@ export default function RootLayout({
           accentColor="iris"
           radius="medium"
           grayColor="slate"
-          appearance="dark"
+          appearance="light"
         >
           {children}
         </Theme>
