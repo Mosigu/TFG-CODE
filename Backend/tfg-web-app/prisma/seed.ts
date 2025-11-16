@@ -4,7 +4,7 @@ import * as bcrypt from 'bcrypt';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Starting seed...');
+  console.log('Starting seed...');
 
   // Hash the password for all users
   const hashedPassword = await bcrypt.hash('password123', 10);
@@ -22,7 +22,7 @@ async function main() {
     },
   });
 
-  console.log('✅ Created admin user:', admin.email);
+  console.log('Created admin user:', admin.email);
 
   const manager = await prisma.user.upsert({
     where: { email: 'manager@example.com' },
@@ -37,7 +37,7 @@ async function main() {
     },
   });
 
-  console.log('✅ Created manager user:', manager.email);
+  console.log('Created manager user:', manager.email);
 
   const developer1 = await prisma.user.upsert({
     where: { email: 'dev1@example.com' },
@@ -52,7 +52,7 @@ async function main() {
     },
   });
 
-  console.log('✅ Created developer 1:', developer1.email);
+  console.log('Created developer 1:', developer1.email);
 
   const developer2 = await prisma.user.upsert({
     where: { email: 'dev2@example.com' },
@@ -67,7 +67,7 @@ async function main() {
     },
   });
 
-  console.log('✅ Created developer 2:', developer2.email);
+  console.log('Created developer 2:', developer2.email);
 
   const tester = await prisma.user.upsert({
     where: { email: 'tester@example.com' },
@@ -82,10 +82,10 @@ async function main() {
     },
   });
 
-  console.log('✅ Created tester:', tester.email);
+  console.log('Created tester:', tester.email);
 
   console.log('');
-  console.log('🎉 Seed completed successfully!');
+  console.log('Seed completed successfully!');
   console.log('');
   console.log('Test users credentials:');
   console.log('  Email: admin@example.com | Password: password123');
@@ -97,7 +97,7 @@ async function main() {
 
 main()
   .catch((e) => {
-    console.error('❌ Error during seed:', e);
+    console.error('Error during seed:', e);
     process.exit(1);
   })
   .finally(async () => {
