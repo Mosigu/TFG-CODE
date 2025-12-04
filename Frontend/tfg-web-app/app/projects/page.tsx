@@ -21,12 +21,7 @@ export default function ProjectsPage() {
       const newProject = await createProject(data);
       console.log("Project created successfully:", newProject);
       setCreateModalOpen(false);
-
-      // Refresh the projects table
       setRefreshKey((prev) => prev + 1);
-
-      // Optional: Navigate to the new project
-      // router.push(`/projects/${newProject.id}`);
     } catch (error: any) {
       console.error("Error creating project:", error);
       alert(`Failed to create project: ${error.message || "Unknown error"}`);

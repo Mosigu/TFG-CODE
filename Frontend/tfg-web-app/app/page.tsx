@@ -72,26 +72,22 @@ export default function Home() {
 
     const fetchData = async () => {
       try {
-        // Fetch all data in parallel
         const [projectsData, tasksData, incidencesData, activitiesData] =
           await Promise.all([
             getProjects(),
             getAllTasks(),
             getAllIncidences(),
-            getAllActivities(10), // Get last 10 activities
+            getAllActivities(10),
           ]);
 
-        // Count active projects
         const activeProjectsCount = (projectsData as Project[]).filter(
           (project) => project.status === "active"
         ).length;
 
-        // Get active projects
         const activeProjects = (projectsData as Project[]).filter(
           (project) => project.status === "active"
         );
 
-        // Count pending tasks
         const pendingTasksCount = (tasksData as Task[]).filter(
           (task) =>
             task.status === "pending" ||
@@ -99,7 +95,6 @@ export default function Home() {
             task.status === "in-progress"
         ).length;
 
-        // Count tasks completed today
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const completedTodayCount = (tasksData as Task[]).filter((task) => {
@@ -110,7 +105,6 @@ export default function Home() {
           return taskDate >= today;
         }).length;
 
-        // Count open incidences
         const openIncidencesCount = (incidencesData as Incidence[]).filter(
           (incidence) =>
             incidence.status !== "resolved" && incidence.status !== "closed"
@@ -157,7 +151,6 @@ export default function Home() {
       <MainMenu />
       <PageContainer maxWidth="1400px">
         <Flex direction="column" gap="6">
-          {/* Header Section */}
           <Box>
             <Flex direction="column" gap="2">
               <Heading as="h1" size="8" weight="bold" highContrast>
@@ -170,7 +163,6 @@ export default function Home() {
             </Flex>
           </Box>
 
-          {/* Stats Grid */}
           <Grid columns={{ initial: "1", sm: "2", lg: "4" }} gap="4">
             <StatCard
               title="Active Projects"
@@ -194,16 +186,12 @@ export default function Home() {
             />
           </Grid>
 
-          {/* Main Content Grid */}
           <Grid
             columns={{ initial: "1", lg: "2" }}
             gap="4"
             style={{ alignItems: "start" }}
           >
-            {/* Projects Grid */}
             <ProjectsGrid projects={projects} loading={loading} />
-
-            {/* Activity Feed */}
             <ActivityFeed activities={activities} loading={loading} />
           </Grid>
         </Flex>

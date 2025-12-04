@@ -113,7 +113,6 @@ export function AddCollaboratorModal({
         </Dialog.Description>
 
         <Flex direction="column" gap="3">
-          {/* User Selection */}
           <Box>
             <Text as="label" size="2" mb="1" weight="bold">
               User
@@ -141,7 +140,6 @@ export function AddCollaboratorModal({
             </Select.Root>
           </Box>
 
-          {/* Role Selection */}
           <Box>
             <Text as="label" size="2" mb="1" weight="bold">
               Role
@@ -158,14 +156,12 @@ export function AddCollaboratorModal({
             </Select.Root>
           </Box>
 
-          {/* Error Message */}
           {error && (
             <Text color="red" size="2">
               {error}
             </Text>
           )}
 
-          {/* Actions */}
           <Flex gap="3" mt="4" justify="end">
             <Dialog.Close>
               <Button variant="soft" color="gray" disabled={loading}>

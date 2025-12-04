@@ -38,9 +38,6 @@ export class UsersController {
     }
   }
 
-  // -----------------------
-  // CRUD
-  // -----------------------
   @Get()
   async getAllUsers() {
     try {

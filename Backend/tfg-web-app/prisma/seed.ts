@@ -6,10 +6,8 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('🌱 Starting seed...');
 
-  // Hash the password for all users
   const hashedPassword = await bcrypt.hash('password123', 10);
 
-  // Create users
   const admin = await prisma.user.upsert({
     where: { email: 'admin@example.com' },
     update: {},
