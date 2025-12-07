@@ -20,7 +20,7 @@ docker push gcr.io/${PROJECT_ID}/${IMAGE_NAME}:${TAG}
 echo "Updating Kubernetes deployment..."
 cd /home/user/TFG-CODE
 
-sed -i "s|image: your-registry/tfg-backend:latest|image: gcr.io/${PROJECT_ID}/${IMAGE_NAME}:${TAG}|g" k8s/backend-deployment.yaml
+sed -i "s|image: REGISTRY/tfg-backend:latest|image: gcr.io/${PROJECT_ID}/${IMAGE_NAME}:${TAG}|g" k8s/backend-deployment.yaml
 
 kubectl apply -f k8s/backend-secret.yaml
 kubectl apply -f k8s/backend-configmap.yaml

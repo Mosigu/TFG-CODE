@@ -93,10 +93,10 @@ See [k8s/README.md](k8s/README.md) for detailed Kubernetes deployment instructio
 
 ```bash
 # Build and push images
-docker build -t your-registry/tfg-backend:latest ./Backend/tfg-web-app
-docker build -t your-registry/tfg-frontend:latest ./Frontend/tfg-web-app
-docker push your-registry/tfg-backend:latest
-docker push your-registry/tfg-frontend:latest
+docker build -t REGISTRY/tfg-backend:latest ./Backend/tfg-web-app
+docker build -t REGISTRY/tfg-frontend:latest ./Frontend/tfg-web-app
+docker push REGISTRY/tfg-backend:latest
+docker push REGISTRY/tfg-frontend:latest
 
 # Update image references in k8s manifests
 # Edit k8s/backend-deployment.yaml and k8s/frontend-deployment.yaml
