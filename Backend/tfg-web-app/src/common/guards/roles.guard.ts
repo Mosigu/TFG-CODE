@@ -2,6 +2,7 @@ import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from '../decorators/roles.decorator';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { UserRole, hasRoleOrHigher } from '../constants/roles';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -27,17 +28,28 @@ export class RolesGuard implements CanActivate {
       throw new ForbiddenException('User not authenticated');
     }
 
-    // Fetch user from database to get role
-    const dbUser = await this.prisma.user.findUnique({
-      where: { id: user.userId },
-      select: { role: true },
-    });
+    let userRole = user.role;
 
-    if (!dbUser) {
-      throw new ForbiddenException('User not found');
+    if (!userRole) {
+      const dbUser = await this.prisma.user.findUnique({
+        where: { id: user.userId },
+        select: { role: true },
+      });
+
+      if (!dbUser) {
+        throw new ForbiddenException('User not found');
+      }
+      userRole = dbUser.role;
     }
 
-    const hasRole = requiredRoles.includes(dbUser.role);
+    const hasRole = requiredRoles.some(requiredRole => {
+      if (userRole === requiredRole) return true;
+      if (Object.values(UserRole).includes(userRole as UserRole) &&
+          Object.values(UserRole).includes(requiredRole as UserRole)) {
+        return hasRoleOrHigher(userRole as UserRole, requiredRole as UserRole);
+      }
+      return false;
+    });
 
     if (!hasRole) {
       throw new ForbiddenException(`You don't have permission to access this resource. Required roles: ${requiredRoles.join(', ')}`);

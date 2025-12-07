@@ -12,6 +12,7 @@ import {
   HttpException,
   HttpStatus,
   UseGuards,
+  ForbiddenException,
 } from '@nestjs/common';
 import type { Request } from 'express';
 import { WorkElementsService } from './work-elements.service';
@@ -31,11 +32,80 @@ import { CreateUserTaskDto } from './dto/create-user-task.dto';
 import { UpdateUserTaskDto } from './dto/update-user-task.dto';
 import { JwtAuthGuard } from '../users/jwt.guard';
 import { CurrentUser } from '../users/decorators/current-user.decorator';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { Roles } from '../common/decorators/roles.decorator';
+import { UserRole, ProjectRole, hasProjectRoleOrHigher } from '../common/constants/roles';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Controller('work-elements')
 @UseGuards(JwtAuthGuard)
 export class WorkElementsController {
-  constructor(private readonly workElementsService: WorkElementsService) {}
+  constructor(
+    private readonly workElementsService: WorkElementsService,
+    private readonly prisma: PrismaService,
+  ) {}
+
+  private async checkProjectAccess(
+    userId: string,
+    userRole: string,
+    projectId: string,
+    requiredProjectRole: ProjectRole,
+  ): Promise<void> {
+    if (userRole === UserRole.ADMIN) return;
+
+    const userProject = await this.prisma.userProject.findUnique({
+      where: { userId_projectId: { userId, projectId } },
+    });
+
+    if (!userProject) {
+      throw new ForbiddenException('You are not a member of this project');
+    }
+
+    if (!hasProjectRoleOrHigher(userProject.role as ProjectRole, requiredProjectRole)) {
+      throw new ForbiddenException(
+        `You need at least ${requiredProjectRole} role in this project`
+      );
+    }
+  }
+
+  private async checkTaskAccess(
+    userId: string,
+    userRole: string,
+    taskId: string,
+    requireProjectRole?: ProjectRole,
+  ): Promise<void> {
+    if (userRole === UserRole.ADMIN) return;
+
+    const task = await this.prisma.task.findUnique({
+      where: { id: taskId },
+    });
+
+    if (!task) {
+      throw new ForbiddenException('Task not found');
+    }
+
+    const userProject = await this.prisma.userProject.findUnique({
+      where: { userId_projectId: { userId, projectId: task.projectId } },
+    });
+
+    if (!userProject) {
+      throw new ForbiddenException('You are not a member of this project');
+    }
+
+    if (requireProjectRole && !hasProjectRoleOrHigher(
+      userProject.role as ProjectRole,
+      requireProjectRole
+    )) {
+      const userTask = await this.prisma.userTask.findUnique({
+        where: { userId_taskId: { userId, taskId } },
+      });
+      if (!userTask) {
+        throw new ForbiddenException(
+          `You need at least ${requireProjectRole} role or be assigned to this task`
+        );
+      }
+    }
+  }
 
   @Get('projects')
   async getAllProjects() {
@@ -62,6 +132,8 @@ export class WorkElementsController {
   }
 
   @Post('projects')
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   async createProject(
     @Body() createProjectDto: CreateProjectDto,
@@ -86,15 +158,17 @@ export class WorkElementsController {
   async updateProject(
     @Param('id') id: string,
     @Body() updateProjectDto: UpdateProjectDto,
-    @CurrentUser() user: { userId: string; email: string },
+    @CurrentUser() user: { userId: string; email: string; role: string },
   ) {
     try {
+      await this.checkProjectAccess(user.userId, user.role, id, ProjectRole.MANAGER);
       return await this.workElementsService.updateProject(
         id,
         updateProjectDto,
         user.userId,
       );
     } catch (error: any) {
+      if (error instanceof ForbiddenException) throw error;
       if (error.name === 'NotFoundException' || error.code === 'P2025') {
         throw new HttpException('Project not found', HttpStatus.NOT_FOUND);
       }
@@ -113,11 +187,13 @@ export class WorkElementsController {
   @Delete('projects/:id')
   async deleteProject(
     @Param('id') id: string,
-    @CurrentUser() user: { userId: string; email: string },
+    @CurrentUser() user: { userId: string; email: string; role: string },
   ) {
     try {
+      await this.checkProjectAccess(user.userId, user.role, id, ProjectRole.OWNER);
       return await this.workElementsService.deleteProject(id, user.userId);
     } catch (error: any) {
+      if (error instanceof ForbiddenException) throw error;
       if (error.name === 'NotFoundException' || error.code === 'P2025') {
         throw new HttpException('Project not found', HttpStatus.NOT_FOUND);
       }
@@ -162,10 +238,15 @@ export class WorkElementsController {
   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   async createTask(
     @Body() createTaskDto: CreateTaskDto,
-    @CurrentUser() user: { userId: string; email: string },
+    @CurrentUser() user: { userId: string; email: string; role: string },
   ) {
     try {
-
+      await this.checkProjectAccess(
+        user.userId,
+        user.role,
+        createTaskDto.projectId,
+        ProjectRole.COLLABORATOR,
+      );
       const result = await this.workElementsService.createTask(
         createTaskDto,
         user.userId,
@@ -173,6 +254,7 @@ export class WorkElementsController {
 
       return result;
     } catch (error: any) {
+      if (error instanceof ForbiddenException) throw error;
       throw new HttpException(
         error.message || 'Failed to create task',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -185,15 +267,17 @@ export class WorkElementsController {
   async updateTask(
     @Param('id') id: string,
     @Body() updateTaskDto: UpdateTaskDto,
-    @CurrentUser() user: { userId: string; email: string },
+    @CurrentUser() user: { userId: string; email: string; role: string },
   ) {
     try {
+      await this.checkTaskAccess(user.userId, user.role, id, ProjectRole.COLLABORATOR);
       return await this.workElementsService.updateTask(
         id,
         updateTaskDto,
         user.userId,
       );
     } catch (error) {
+      if (error instanceof ForbiddenException) throw error;
       throw new HttpException(
         'Failed to update task',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -204,11 +288,13 @@ export class WorkElementsController {
   @Delete('tasks/:id')
   async deleteTask(
     @Param('id') id: string,
-    @CurrentUser() user: { userId: string; email: string },
+    @CurrentUser() user: { userId: string; email: string; role: string },
   ) {
     try {
+      await this.checkTaskAccess(user.userId, user.role, id, ProjectRole.MANAGER);
       return await this.workElementsService.deleteTask(id, user.userId);
     } catch (error) {
+      if (error instanceof ForbiddenException) throw error;
       throw new HttpException(
         'Failed to delete task',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -476,15 +562,17 @@ export class WorkElementsController {
   async assignUserToProject(
     @Param('projectId') projectId: string,
     @Body() createUserProjectDto: CreateUserProjectDto,
-    @CurrentUser() user: { userId: string; email: string },
+    @CurrentUser() user: { userId: string; email: string; role: string },
   ) {
     try {
+      await this.checkProjectAccess(user.userId, user.role, projectId, ProjectRole.MANAGER);
       return await this.workElementsService.assignUserToProject(
         projectId,
         createUserProjectDto,
         user.userId,
       );
     } catch (error) {
+      if (error instanceof ForbiddenException) throw error;
       throw new HttpException(
         'Failed to assign user to project',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -498,9 +586,10 @@ export class WorkElementsController {
     @Param('projectId') projectId: string,
     @Param('userId') userId: string,
     @Body() updateUserProjectDto: UpdateUserProjectDto,
-    @CurrentUser() user: { userId: string; email: string },
+    @CurrentUser() user: { userId: string; email: string; role: string },
   ) {
     try {
+      await this.checkProjectAccess(user.userId, user.role, projectId, ProjectRole.MANAGER);
       return await this.workElementsService.updateUserProjectRole(
         projectId,
         userId,
@@ -508,6 +597,7 @@ export class WorkElementsController {
         user.userId,
       );
     } catch (error) {
+      if (error instanceof ForbiddenException) throw error;
       throw new HttpException(
         'Failed to update user project role',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -519,15 +609,17 @@ export class WorkElementsController {
   async removeUserFromProject(
     @Param('projectId') projectId: string,
     @Param('userId') userId: string,
-    @CurrentUser() user: { userId: string; email: string },
+    @CurrentUser() user: { userId: string; email: string; role: string },
   ) {
     try {
+      await this.checkProjectAccess(user.userId, user.role, projectId, ProjectRole.MANAGER);
       return await this.workElementsService.removeUserFromProject(
         projectId,
         userId,
         user.userId,
       );
     } catch (error) {
+      if (error instanceof ForbiddenException) throw error;
       throw new HttpException(
         'Failed to remove user from project',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -552,15 +644,17 @@ export class WorkElementsController {
   async assignUserToTask(
     @Param('taskId') taskId: string,
     @Body() createUserTaskDto: CreateUserTaskDto,
-    @CurrentUser() user: { userId: string; email: string },
+    @CurrentUser() user: { userId: string; email: string; role: string },
   ) {
     try {
+      await this.checkTaskAccess(user.userId, user.role, taskId, ProjectRole.COLLABORATOR);
       return await this.workElementsService.assignUserToTask(
         taskId,
         createUserTaskDto,
         user.userId,
       );
     } catch (error) {
+      if (error instanceof ForbiddenException) throw error;
       throw new HttpException(
         'Failed to assign user to task',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -574,9 +668,10 @@ export class WorkElementsController {
     @Param('taskId') taskId: string,
     @Param('userId') userId: string,
     @Body() updateUserTaskDto: UpdateUserTaskDto,
-    @CurrentUser() user: { userId: string; email: string },
+    @CurrentUser() user: { userId: string; email: string; role: string },
   ) {
     try {
+      await this.checkTaskAccess(user.userId, user.role, taskId, ProjectRole.COLLABORATOR);
       return await this.workElementsService.updateUserTaskRole(
         taskId,
         userId,
@@ -584,6 +679,7 @@ export class WorkElementsController {
         user.userId,
       );
     } catch (error) {
+      if (error instanceof ForbiddenException) throw error;
       throw new HttpException(
         'Failed to update user task role',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -595,15 +691,17 @@ export class WorkElementsController {
   async removeUserFromTask(
     @Param('taskId') taskId: string,
     @Param('userId') userId: string,
-    @CurrentUser() user: { userId: string; email: string },
+    @CurrentUser() user: { userId: string; email: string; role: string },
   ) {
     try {
+      await this.checkTaskAccess(user.userId, user.role, taskId, ProjectRole.COLLABORATOR);
       return await this.workElementsService.removeUserFromTask(
         taskId,
         userId,
         user.userId,
       );
     } catch (error) {
+      if (error instanceof ForbiddenException) throw error;
       throw new HttpException(
         'Failed to remove user from task',
         HttpStatus.INTERNAL_SERVER_ERROR,
