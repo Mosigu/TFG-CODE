@@ -81,7 +81,6 @@ export function SimpleTasksTable({ tasks }: SimpleTasksTableProps) {
             onClick={() => handleRowClick(task.id)}
             style={{ cursor: "pointer" }}
           >
-            {/* Task Name Column */}
             <Table.RowHeaderCell>
               <Box
                 style={{
@@ -125,7 +124,6 @@ export function SimpleTasksTable({ tasks }: SimpleTasksTableProps) {
               </Box>
             </Table.RowHeaderCell>
 
-            {/* Status Column */}
             <Table.Cell>
               <Badge color={getStatusColor(task.status)} size="2">
                 {getStatusIcon(task.status)}

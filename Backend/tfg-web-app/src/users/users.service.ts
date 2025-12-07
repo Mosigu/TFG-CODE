@@ -13,9 +13,6 @@ export class UsersService {
     private jwtService: JwtService,
   ) {}
 
-  // -----------------------
-  // CRUD Users
-  // -----------------------
   async getAllUsers(): Promise<Omit<User, 'password'>[]> {
     return this.prisma.user.findMany({
       select: {
@@ -136,9 +133,6 @@ export class UsersService {
     });
   }
 
-  // -----------------------
-  // AUTH METHODS
-  // -----------------------
   async validateUser(
     email: string,
     password: string,

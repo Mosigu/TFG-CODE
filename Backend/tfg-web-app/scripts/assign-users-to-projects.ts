@@ -5,7 +5,6 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('🔍 Checking projects without users...');
 
-  // Get all projects
   const projects = await prisma.project.findMany({
     include: {
       users: true,
@@ -14,7 +13,6 @@ async function main() {
 
   console.log(`📁 Found ${projects.length} projects`);
 
-  // Get all users
   const users = await prisma.user.findMany();
   console.log(`👥 Found ${users.length} users`);
 

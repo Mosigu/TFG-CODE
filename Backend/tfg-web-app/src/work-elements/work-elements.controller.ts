@@ -95,11 +95,6 @@ export class WorkElementsController {
         user.userId,
       );
     } catch (error: any) {
-      console.error('Update project error:', error);
-      console.error('Error message:', error.message);
-      console.error('Error stack:', error.stack);
-      console.error('Error code:', error.code);
-
       if (error.name === 'NotFoundException' || error.code === 'P2025') {
         throw new HttpException('Project not found', HttpStatus.NOT_FOUND);
       }
@@ -123,10 +118,6 @@ export class WorkElementsController {
     try {
       return await this.workElementsService.deleteProject(id, user.userId);
     } catch (error: any) {
-      console.error('Delete project error:', error);
-      console.error('Error message:', error.message);
-      console.error('Error stack:', error.stack);
-
       if (error.name === 'NotFoundException' || error.code === 'P2025') {
         throw new HttpException('Project not found', HttpStatus.NOT_FOUND);
       }

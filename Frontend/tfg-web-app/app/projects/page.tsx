@@ -8,27 +8,17 @@ import { PageContainer } from "../components/PageContainer";
 import { ProjectsTable } from "../components/ProjectsTable";
 import { CreateProjectModal } from "../components/CreateProjectModal";
 import { createProject } from "../utils/work-element-utils";
-import { useRouter } from "next/navigation";
 
 export default function ProjectsPage() {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
-  const router = useRouter();
 
   const handleCreateProject = async (data: any) => {
     try {
-      console.log("Creating project with data:", data);
-      const newProject = await createProject(data);
-      console.log("Project created successfully:", newProject);
+      await createProject(data);
       setCreateModalOpen(false);
-
-      // Refresh the projects table
       setRefreshKey((prev) => prev + 1);
-
-      // Optional: Navigate to the new project
-      // router.push(`/projects/${newProject.id}`);
     } catch (error: any) {
-      console.error("Error creating project:", error);
       alert(`Failed to create project: ${error.message || "Unknown error"}`);
     }
   };

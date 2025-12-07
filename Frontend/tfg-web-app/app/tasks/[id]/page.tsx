@@ -164,11 +164,9 @@ export default function TaskDetailPage() {
   const handleAddMilestone = async (data: any) => {
     try {
       if (data.id) {
-        // Actualizar milestone existente
-        const { id, ...updateData } = data; // Separa el ID del resto de los datos
+        const { id, ...updateData } = data;
         await updateMilestone(id, updateData);
       } else {
-        // Crear nuevo milestone
         await createMilestone(data);
       }
       await fetchTaskData();
@@ -198,11 +196,9 @@ export default function TaskDetailPage() {
   const handleAddIncidence = async (data: any) => {
     try {
       if (data.id) {
-        // Actualizar incidence existente
-        const { id, ...updateData } = data; // Separa el ID del resto de los datos
+        const { id, ...updateData } = data;
         await updateIncidence(id, updateData);
       } else {
-        // Crear nueva incidence
         await createIncidence(data);
       }
       await fetchTaskData();
@@ -784,7 +780,6 @@ export default function TaskDetailPage() {
         open={milestoneModalOpen}
         onClose={() => {
           setMilestoneModalOpen(false);
-          // Solo limpiar después de un pequeño delay para permitir que el modal cierre
           setTimeout(() => setEditingMilestone(null), 100);
         }}
         onSave={handleAddMilestone}
@@ -796,7 +791,6 @@ export default function TaskDetailPage() {
         open={incidenceModalOpen}
         onClose={() => {
           setIncidenceModalOpen(false);
-          // Solo limpiar después de un pequeño delay para permitir que el modal cierre
           setTimeout(() => setEditingIncidence(null), 100);
         }}
         onSave={handleAddIncidence}

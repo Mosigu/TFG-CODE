@@ -504,7 +504,6 @@ export async function getMyTasks(userId: string) {
   }
 }
 
-// Get all incidences
 export async function getAllIncidences() {
   try {
     const response = await apiClient.get("/work-elements/incidents");
@@ -527,7 +526,6 @@ export async function getAllIncidences() {
   }
 }
 
-// Get all activities
 export async function getAllActivities(limit?: number) {
   try {
     const url = limit ? `/activity?limit=${limit}` : "/activity";
@@ -551,7 +549,6 @@ export async function getAllActivities(limit?: number) {
   }
 }
 
-// Get user by ID
 export async function getUserById(userId: string) {
   try {
     const response = await apiClient.get(`/users/${userId}`);
@@ -574,7 +571,6 @@ export async function getUserById(userId: string) {
   }
 }
 
-// Get all users
 export async function getAllUsers() {
   try {
     const response = await apiClient.get("/users");
@@ -597,13 +593,11 @@ export async function getAllUsers() {
   }
 }
 
-// Login user
 export async function loginUser(email: string, password: string) {
   try {
     const response = await apiClient.post("/users/login", { email, password });
     const { access_token, user } = response.data;
 
-    // Store token in localStorage
     if (typeof window !== "undefined") {
       localStorage.setItem("auth_token", access_token);
       localStorage.setItem("current_user", JSON.stringify(user));
@@ -628,7 +622,6 @@ export async function loginUser(email: string, password: string) {
   }
 }
 
-// Logout user
 export function logoutUser() {
   if (typeof window !== "undefined") {
     localStorage.removeItem("auth_token");
@@ -636,17 +629,14 @@ export function logoutUser() {
   }
 }
 
-// Get current user from localStorage
 export function getCurrentUser() {
   if (typeof window !== "undefined") {
     const userStr = localStorage.getItem("current_user");
-    // Check if userStr exists and is not the string "undefined"
     return userStr && userStr !== "undefined" ? JSON.parse(userStr) : null;
   }
   return null;
 }
 
-// Check if user is authenticated
 export function isAuthenticated() {
   if (typeof window !== "undefined") {
     return !!localStorage.getItem("auth_token");
@@ -654,7 +644,6 @@ export function isAuthenticated() {
   return false;
 }
 
-// Add user to project
 export async function addUserToProject(
   projectId: string,
   userId: string,
@@ -686,7 +675,6 @@ export async function addUserToProject(
   }
 }
 
-// Remove user from project
 export async function removeUserFromProject(
   projectId: string,
   userId: string
@@ -716,7 +704,6 @@ export async function removeUserFromProject(
   }
 }
 
-// Add user to task
 export async function addUserToTask(
   taskId: string,
   userId: string,
@@ -746,7 +733,6 @@ export async function addUserToTask(
   }
 }
 
-// Remove user from task
 export async function removeUserFromTask(taskId: string, userId: string) {
   try {
     const response = await apiClient.delete(
