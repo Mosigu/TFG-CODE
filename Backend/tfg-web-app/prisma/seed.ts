@@ -4,8 +4,6 @@ import * as bcrypt from 'bcrypt';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Starting seed...');
-
   const hashedPassword = await bcrypt.hash('password123', 10);
 
   const admin = await prisma.user.upsert({
@@ -21,8 +19,6 @@ async function main() {
     },
   });
 
-  console.log('✅ Created admin user:', admin.email, '(role: admin)');
-
   const manager = await prisma.user.upsert({
     where: { email: 'manager@example.com' },
     update: { role: 'manager' },
@@ -37,9 +33,7 @@ async function main() {
     },
   });
 
-  console.log('✅ Created manager user:', manager.email, '(role: manager)');
-
-  const developer1 = await prisma.user.upsert({
+  await prisma.user.upsert({
     where: { email: 'dev1@example.com' },
     update: { role: 'contributor' },
     create: {
@@ -53,9 +47,7 @@ async function main() {
     },
   });
 
-  console.log('✅ Created developer 1:', developer1.email, '(role: contributor)');
-
-  const developer2 = await prisma.user.upsert({
+  await prisma.user.upsert({
     where: { email: 'dev2@example.com' },
     update: { role: 'contributor' },
     create: {
@@ -69,9 +61,7 @@ async function main() {
     },
   });
 
-  console.log('✅ Created developer 2:', developer2.email, '(role: contributor)');
-
-  const viewer = await prisma.user.upsert({
+  await prisma.user.upsert({
     where: { email: 'viewer@example.com' },
     update: { role: 'viewer' },
     create: {
@@ -85,28 +75,12 @@ async function main() {
     },
   });
 
-  console.log('✅ Created viewer:', viewer.email, '(role: viewer)');
-
-  console.log('');
-  console.log('🎉 Seed completed successfully!');
-  console.log('');
-  console.log('Test users credentials:');
-  console.log('  Email: admin@example.com | Password: password123 | Role: ADMIN');
-  console.log('  Email: manager@example.com | Password: password123 | Role: MANAGER');
-  console.log('  Email: dev1@example.com | Password: password123 | Role: CONTRIBUTOR');
-  console.log('  Email: dev2@example.com | Password: password123 | Role: CONTRIBUTOR');
-  console.log('  Email: viewer@example.com | Password: password123 | Role: VIEWER');
-  console.log('');
-  console.log('Role Permissions:');
-  console.log('  ADMIN: Full system access, manage users and roles');
-  console.log('  MANAGER: Create/manage projects, assign team members');
-  console.log('  CONTRIBUTOR: Execute tasks, update status, record progress');
-  console.log('  VIEWER: Read-only access to project information');
+  console.log('Seed completed');
 }
 
 main()
   .catch((e) => {
-    console.error('❌ Error during seed:', e);
+    console.error('Seed error:', e);
     process.exit(1);
   })
   .finally(async () => {
