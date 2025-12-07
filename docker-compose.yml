@@ -46,10 +46,12 @@ services:
     build:
       context: ./Frontend/tfg-web-app
       dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_BASE_URL=http://localhost:4000
     container_name: tfg-frontend
     restart: unless-stopped
     environment:
-      NEXT_PUBLIC_BASE_URL: http://backend:4000
+      NEXT_PUBLIC_BASE_URL: http://localhost:4000
       NODE_ENV: production
     ports:
       - "3000:3000"
