@@ -21,9 +21,10 @@ COPY package*.json ./
 COPY pnpm-lock.yaml ./
 COPY --from=build /app/prisma ./prisma
 RUN pnpm install --prod --frozen-lockfile
-RUN pnpm exec prisma generate
+COPY --from=build /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=build /app/node_modules/@prisma ./node_modules/@prisma
 
 COPY --from=build /app/dist ./dist
 
 EXPOSE 4000
-CMD ["sh", "-c", "pnpm exec prisma migrate deploy && node dist/src/main"]
+CMD ["node", "dist/src/main"]
