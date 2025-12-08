@@ -27,7 +27,7 @@ services:
     restart: unless-stopped
     environment:
       DATABASE_URL: postgresql://tfguser:tfgpassword@postgres:5432/tfgdb
-      JWT_SECRET: your-production-secret-key-change-this
+      JWT_SECRET: changeme
       PORT: 4000
       NODE_ENV: production
     ports:

@@ -13,15 +13,15 @@ This directory contains Kubernetes manifests for deploying the TFG application.
 ### Backend
 ```bash
 cd Backend/tfg-web-app
-docker build -t your-registry/tfg-backend:latest .
-docker push your-registry/tfg-backend:latest
+docker build -t REGISTRY/tfg-backend:latest .
+docker push REGISTRY/tfg-backend:latest
 ```
 
 ### Frontend
 ```bash
 cd Frontend/tfg-web-app
-docker build -t your-registry/tfg-frontend:latest .
-docker push your-registry/tfg-frontend:latest
+docker build -t REGISTRY/tfg-frontend:latest .
+docker push REGISTRY/tfg-frontend:latest
 ```
 
 ## Deployment Steps
