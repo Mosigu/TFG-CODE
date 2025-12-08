@@ -4,11 +4,10 @@ metadata:
   name: frontend
   namespace: tfg-app
 spec:
-  type: LoadBalancer
-  ports:
-  - port: 80
-    targetPort: 3000
-    protocol: TCP
-    name: http
+  type: NodePort
   selector:
     app: frontend
+  ports:
+    - port: 80
+      targetPort: 3000
+      protocol: TCP
