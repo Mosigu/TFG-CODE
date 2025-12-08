@@ -11,7 +11,7 @@ FROM base AS build
 RUN npm install -g pnpm
 COPY --from=dependencies /app/node_modules ./node_modules
 COPY . .
-RUN npx prisma generate
+RUN pnpm exec prisma generate
 RUN pnpm run build
 
 FROM node:20-alpine AS production
@@ -21,9 +21,9 @@ COPY package*.json ./
 COPY pnpm-lock.yaml ./
 COPY --from=build /app/prisma ./prisma
 RUN pnpm install --prod --frozen-lockfile
-RUN npx prisma generate
+RUN pnpm exec prisma generate
 
 COPY --from=build /app/dist ./dist
 
 EXPOSE 4000
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/src/main"]
+CMD ["sh", "-c", "pnpm exec prisma migrate deploy && node dist/src/main"]
