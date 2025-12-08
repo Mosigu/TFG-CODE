@@ -4,37 +4,42 @@ const BACKEND_URL = process.env.BACKEND_URL || "http://backend:4000";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { path: string[] } }
+  context: { params: Promise<{ path: string[] }> }
 ) {
-  return proxyRequest(request, params.path, "GET");
+  const { path } = await context.params;
+  return proxyRequest(request, path, "GET");
 }
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { path: string[] } }
+  context: { params: Promise<{ path: string[] }> }
 ) {
-  return proxyRequest(request, params.path, "POST");
+  const { path } = await context.params;
+  return proxyRequest(request, path, "POST");
 }
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { path: string[] } }
+  context: { params: Promise<{ path: string[] }> }
 ) {
-  return proxyRequest(request, params.path, "PUT");
+  const { path } = await context.params;
+  return proxyRequest(request, path, "PUT");
 }
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { path: string[] } }
+  context: { params: Promise<{ path: string[] }> }
 ) {
-  return proxyRequest(request, params.path, "PATCH");
+  const { path } = await context.params;
+  return proxyRequest(request, path, "PATCH");
 }
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { path: string[] } }
+  context: { params: Promise<{ path: string[] }> }
 ) {
-  return proxyRequest(request, params.path, "DELETE");
+  const { path } = await context.params;
+  return proxyRequest(request, path, "DELETE");
 }
 
 async function proxyRequest(
@@ -69,9 +74,8 @@ async function proxyRequest(
       try {
         const text = await request.text();
         body = text || undefined;
-      } catch (e) {
-        // Continue without body
-      }
+      } catch (e) {}
+
     }
 
     const response = await fetch(backendUrl, {
@@ -84,7 +88,11 @@ async function proxyRequest(
 
     const responseHeaders = new Headers();
     response.headers.forEach((value, key) => {
-      if (!["connection", "keep-alive", "transfer-encoding"].includes(key.toLowerCase())) {
+      if (
+        !["connection", "keep-alive", "transfer-encoding"].includes(
+          key.toLowerCase()
+        )
+      ) {
         responseHeaders.set(key, value);
       }
     });
@@ -102,3 +110,4 @@ async function proxyRequest(
     );
   }
 }
+
