@@ -1,0 +1,8 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: pm-cert
+  namespace: tfg-app
+spec:
+  domains:
+    - console.project-management-tool.tech
